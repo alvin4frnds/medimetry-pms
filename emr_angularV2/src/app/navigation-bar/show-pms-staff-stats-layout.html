@@ -1,0 +1,34 @@
+<p class="titleFont no-margin" style="display: flex; align-items: center;">
+    The work you have done in PMS
+
+    <span style="flex: 1 auto;"></span>
+
+    <button mat-icon-button (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</p>
+
+<table mat-table [dataSource]="dataSource" *ngIf="dataSource && dataSource.length" style="width: 100%">
+    <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let element"> {{ element.label }}</td>
+    </ng-container>
+    <ng-container matColumnDef="thisMonth">
+        <th mat-header-cell *matHeaderCellDef> {{ thisMonthText }} </th>
+        <td mat-cell *matCellDef="let element"> {{ element.thisMonth }}</td>
+    </ng-container>
+    <ng-container matColumnDef="lastMonth">
+        <th mat-header-cell *matHeaderCellDef> {{ lastMonthText }} </th>
+        <td mat-cell *matCellDef="let element"> {{ element.lastMonth }}</td>
+    </ng-container>
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element"> {{ element.total }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>

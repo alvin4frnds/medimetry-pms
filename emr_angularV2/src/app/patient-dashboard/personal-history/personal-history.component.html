@@ -1,0 +1,128 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;" fxFlex="1 1 auto">
+            <strong>Personal History</strong>
+        </p>
+
+        <mat-icon (click)="deleteSection()"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  class="iconStyle_big a-icon">
+            close
+        </mat-icon>
+    </div>
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+        <p class="mat-body-strong no-base-margin">Dietary Compliance</p>
+        <mat-radio-group aria-label="Select Diatary compliance"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.dietaryCompliance"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">1</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">2</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">3</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">4</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">5</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin">Drug Compliance</p>
+        <mat-radio-group aria-label="Select Drug compliance"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.drugCompliance"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">1</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">2</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">3</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">4</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">5</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin">Exercise</p>
+        <mat-radio-group aria-label="Select Exercise difficulty"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.exercise"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">1</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">2</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">3</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">4</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">5</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin" [hidden]="true">Occupation</p>
+        <mat-radio-group aria-label="Select Occupation difficulty"
+                         [hidden]="true"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.occupation"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">1</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">2</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">3</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">4</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">5</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field class="fullWidth" style="margin-top: 36px; margin-bottom: -18px;"
+                        appearance="outline">
+            <mat-label>Patient's Occupation</mat-label>
+            <input matInput placeholder="Patient's Occupation" [(ngModel)]="data.occupationText"
+                   (change)="updateValues($event)"
+                   [disabled]="_util.previousSoapSettings.previousSoapActivated"
+            >
+        </mat-form-field>
+
+        <p class="mat-body-strong no-base-margin">Life Style</p>
+        <mat-radio-group aria-label="Select Life Style"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.lifeStyle"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="sedentary">Sedentary</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="moderate">Moderate</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="active">Active</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin">Economic Status</p>
+        <mat-radio-group aria-label="Select Life Style"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.economicStatus"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="5">Upper</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">Middle</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="1">Lower</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin">Drinking Habit</p>
+        <mat-radio-group aria-label="Select Occupation difficulty"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.drinkingHabit"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">Never</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">Occasional</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">Mild</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">Regular</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">Heavy</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="mat-body-strong no-base-margin">Smoking Habit</p>
+        <mat-radio-group aria-label="Select Occupation difficulty"
+                         [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                         [(ngModel)]="data.smokingHabit"
+                         (change)="updateValues($event)"
+        >
+            <mat-radio-button class="radio-chip" value="1">Never</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="2">Occasional</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="3">Mild</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="4">Regular</mat-radio-button>
+            <mat-radio-button class="radio-chip" value="5">Chain</mat-radio-button>
+        </mat-radio-group>
+
+        <p class="no-base-margin"></p>
+    </div>
+</div>

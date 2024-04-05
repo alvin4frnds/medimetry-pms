@@ -1,0 +1,33 @@
+[
+  {
+    "group": "admin",
+    "permissions": [
+      {
+        "resource": "*",
+        "methods": "*",
+        "action":"allow"
+      }
+
+    ]
+  },
+  {
+    "group": "guest",
+    "permissions": [
+      {
+        "resource": "login",
+        "methods": "*",
+        "action":"allow"
+      }
+    ]
+  },
+  {
+    "group": "user",
+    "permissions": [
+      {
+        "resource": "doctor",
+        "methods": "*",
+        "action":"deny"
+      }
+    ]
+  }
+]

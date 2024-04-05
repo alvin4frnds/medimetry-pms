@@ -1,0 +1,32 @@
+<div fxLayout="column" class="container" fxFil style="padding-left: 20px;padding-right: 20px;overflow: scroll">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2 class="custom-font-style">Available Doctors</h2>
+    <button mat-button class="buttonBackGround" (click)="updateDoctorBinding()">{{saveButtonText}}</button>
+  </div>
+
+  <div fxLayout="row" *ngIf="showProgressBar; else showAvailableDoctors" fxLayoutAlign="center center"
+       style="margin-top: 15px;">
+    <mat-spinner diameter="30" strokeWidth="5"></mat-spinner>
+  </div>
+
+  <ng-template #showAvailableDoctors>
+    <div fxLayout="row wrap" >
+      <mat-card fxFlex="25" fxFlex.sm="50" fxFlex.xs="50"
+                *ngFor="let doctor of doctor_data; let position =index "
+                style="margin-top: 10px">
+        <mat-card-content>
+          <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <img src="{{doctor.pic}}" class="roundImage" height="50" width="50">
+            <p class="font_patient_title header-font remove-margin-padding"><strong>{{doctor.name}}</strong></p>
+            <p class="font_patient_infor sub-heading-font remove-margin-padding">{{doctor.specialty}}</p>
+            <mat-checkbox class="font_patient_infor" style="margin-top: 20px" [checked]="doctor.isSelected" [(ngModel)]="doctor.isSelected">Bind with Doctor
+            </mat-checkbox>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+
+    </div>
+  </ng-template>
+
+</div>

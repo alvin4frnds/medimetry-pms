@@ -1,0 +1,429 @@
+<div id="voice-lex-container" [hidden]="!showingLayout"
+     fxLayout="row"
+     [ngClass]="{'full-screen': fullScreen}"
+>
+
+    <mat-card  fxFlex="1 auto" class="recorder" style="opacity: 0.7">
+        <p class="mat-title">
+            {{ status }}
+
+            <button mat-icon-button color="primary" (click)="stopListening()"
+                    [hidden]="!recognition">
+                <mat-icon aria-label="Stop listening">stop</mat-icon>
+            </button>
+
+            <button mat-icon-button color="primary" (click)="startListening()"
+                    [hidden]="recognition">
+                <mat-icon aria-label="Start listening">play_arrow</mat-icon>
+            </button>
+
+            <button mat-icon-button color="primary" (click)="resetListening()">
+                <mat-icon aria-label="Reset listening">refresh</mat-icon>
+            </button>
+
+            <button mat-icon-button color="primary" (click)="startUnderstandingAndClear()">
+                <mat-icon aria-label="Send to content recognizer">send</mat-icon>
+            </button>
+        </p>
+        <p class="mat-subheading-1" *ngIf="subStatus.length">
+            {{ subStatus }}
+        </p>
+
+        <p id="recorded-text">
+            <span class="final-text">{{ finalText }}</span>&nbsp;
+            <span class="intrim-text">{{ text }}</span></p>
+
+    </mat-card>
+
+    <mat-card fxFlex="1 auto" class="recorded" style="">
+        <mat-card-content id="models-container">
+            <p>
+                <button mat-flat-button color="primary" (click)="useAboveModels()"
+                        [hidden]="! dataModels.length"
+                        [disabled]="insertModelButtonDisabled">
+                    {{ insertModelButtonText }}</button>
+                {{ recognizerPhrasesCount }} awaiting text(s).
+
+                <span style="flex: 1 1 auto;"></span>
+
+                <button mat-icon-button aria-label="Example icon-button with a heart icon"
+                        (click)="fullScreen = true"
+                        [hidden]="fullScreen"
+                >
+                    <mat-icon>fullscreen</mat-icon>
+                </button>
+                <button mat-icon-button aria-label="Example icon-button with a heart icon"
+                        (click)="fullScreen = false"
+                        [hidden]="!fullScreen"
+                >
+                    <mat-icon>fullscreen_exit</mat-icon>
+                </button>
+            </p>
+
+            <div *ngFor="let model of dataModels; let i = index" >
+                <div *ngIf="model.type === 'prescription-digitalization'" fxLayout="column">
+                    <hr>
+
+                    <div>Mobile:
+                        <input type="tel" title="mobile no. of patient"
+                               placeholder="patient mobile" [(ngModel)]="model.mobile"></div>
+
+                    <div>UID:
+                        <input type="tel" title="UID for patient"
+                               placeholder="patient UID" [(ngModel)]="model.UID"></div>
+
+                    <div>Center: <select [(ngModel)]="model.center" title="center the prescription was made" [value]="model.center">
+                        <option *ngFor="let center of localData['centers']" [value]="center.code">
+                            {{ center.name }}
+                        </option>
+                    </select></div>
+
+                    <div>Doctor: <select [(ngModel)]="model.doctor" title="choose the doctor for consultation">
+                        <option *ngFor="let doctor of localData['doctors']" [value]="doctor.doctor_id">
+                            {{ doctor.doctor_name }}
+                        </option>
+                    </select></div>
+
+                    <div>Name:
+                        <input type="text" title="Patient name" placeholder="name of patient"
+                               [(ngModel)]="model.name"></div>
+
+                    <div>Age:
+                        <input type="number" step="1" min="1" max="120" title="age of patient"
+                               placeholder="in years only" [(ngModel)]="model.age"></div>
+
+                    <div>Gender:
+                        <label [for]="'patient-gender-' + i" (click)="model.gender = 'male'">
+                            <input type="radio" [name]="'patient-gender-' + i" value="male" [(ngModel)]="model.gender" title="male gender"> Male
+                        </label>
+                        <label [for]="'patient-gender-' + i" (click)="model.gender = 'female'">
+                            <input type="radio" [name]="'patient-gender-' + i" value="female" [(ngModel)]="model.gender" title="male gender"> Female
+                        </label>
+                    </div>
+
+                    <!-- Vitals layout -->
+                    <div fxLayout="column" class="padded"><span>Vitals: </span>
+                        <div>BP:
+                            <input type="number" title="Dystolic BP"
+                                   placeholder="full digits only" [(ngModel)]="model.vitals.BPS">
+                            &nbsp;&nbsp;/&nbsp;&nbsp;
+
+                            <input type="number" title="Systolic BP"
+                                   placeholder="full digits only" [(ngModel)]="model.vitals.BPD">
+                        </div>
+
+                        <div>
+                            Height:
+                            <input type="number" title="Height"
+                                   placeholder="feet" [(ngModel)]="model.vitals.heightFt">
+                            &nbsp;&nbsp;'&nbsp;&nbsp;
+
+                            <input type="number" title="Height inches"
+                                   placeholder="inches" [(ngModel)]="model.vitals.heightIn">
+                            &nbsp;&nbsp;"
+                        </div>
+                        <div>Pulse:<input type="number" title="Pulse" [(ngModel)]="model.vitals['Pulse']"></div>
+                        <div>Weight (kg):<input type="number" title="Weight (kg)" [(ngModel)]="model.vitals['Weight (kg)']"></div>
+                        <div>Random Sugar:<input type="number" title="Random Sugar" [(ngModel)]="model.vitals['Random Sugar']"></div>
+                        <div *ngIf="model.vitals['Fasting Sugar']">Fasting Sugar:<input type="number" title="Fasting Sugar" [(ngModel)]="model.vitals['Fasting Sugar']"></div>
+                        <div *ngIf="model.vitals['Post Prandial Sugar']">Post Prandial Sugar:<input type="number" title="Post Prandial Sugar" [(ngModel)]="model.vitals['Post Prandial Sugar']"></div>
+                        <div *ngIf="model.vitals['Oxygen Saturation']">Oxygen Saturation:<input type="number" title="Oxygen Saturation" [(ngModel)]="model.vitals['Oxygen Saturation']"></div>
+                        <div *ngIf="model.vitals['Respiratory Rate']">Respiratory Rate:<input type="number" title="Respiratory Rate" [(ngModel)]="model.vitals['Respiratory Rate']"></div>
+                        <div *ngIf="model.vitals['Head Circumference']">Head Circumference:<input type="number" title="Head Circumference" [(ngModel)]="model.vitals['Head Circumference']"></div>
+                        <div *ngIf="model.vitals['BMI']">BMI:<input type="number" title="BMI" [(ngModel)]="model.vitals['BMI']"></div>
+                    </div>
+
+                    <!-- Chief complains section -->
+                    <div fxLayout="column" class="padded"><span>Chief Complains: </span>
+                        <p *ngFor="let complain of model.chiefComplains; let j = index" style="margin-top: 0">
+                            <strong>{{ j + 1 }}.&nbsp;</strong>
+
+                            <input type="text" title="chief complain of patient" [(ngModel)]="complain.text" placeholder="chief complain">
+                            <br *ngIf="complain.alternatives.length">
+                            <a *ngFor="let alternative of complain.alternatives" (click)="complain.text = alternative">
+                                {{ alternative }} &nbsp;&nbsp;
+                            </a>
+                        </p>
+                    </div>
+
+                    <!-- Diagnosis Section -->
+                    <div fxLayout="column" class="padded"><span>Diagnosis: </span>
+                        <p *ngFor="let diagnos of model.diagnosis; let j = index" style="margin-top: 0">
+                            <strong>{{ j + 1 }}.&nbsp;</strong>
+
+                            <input type="text" title="diagnos of patient" [(ngModel)]="diagnos.text" placeholder="diagnos of patient">
+                            <br *ngIf="diagnos.alternatives.length">
+                            <a *ngFor="let alternative of diagnos.alternatives" (click)="diagnos.text = alternative">
+                                {{ alternative }} &nbsp;&nbsp;
+                            </a>
+                        </p>
+                    </div>
+
+                    <!-- Medications -->
+                    <div fxLayout="column" class="padded" *ngIf="model.medications.length"><span>Medications: </span>
+                        <p *ngFor="let medicine of model.medications; let j = index" style="margin-top: 0">
+                            <strong>{{ j + 1 }}.&nbsp;</strong>
+
+                            <input type="text" title="Name of medicine" [(ngModel)]="medicine.name" placeholder="medicine name">
+                            <br *ngIf="medicine.alternatives.length">
+                            <a *ngFor="let alternative of medicine.alternatives" (click)="medicine.text = alternative">
+                                {{ alternative }} &nbsp;&nbsp;
+                            </a>
+
+                            <br>
+                            <input type="number" title="Duration of the medicine" [(ngModel)]="medicine.duration">
+                            <select [(ngModel)]="medicine.durationUnit" title="Unit of duration of medicine">
+                                <option value="Day(s)">Day(s)</option>
+                                <option value="Week(s)">Week(s)</option>
+                                <option value="Month(s)">Month(s)</option>
+                            </select>
+                            &nbsp;&nbsp;Type of med:
+                            <select title="Type of the medicine" [(ngModel)]="medicine.type">
+                                <option [value]="'tablet'">Tablet</option>
+                                <option [value]="'cap'">Capsule</option>
+                                <option [value]="'syp'">Syrup</option>
+                                <option [value]="'inhaler'">Inhaler</option>
+                                <option [value]="'cream'">Cream</option>
+                                <option [value]="'ear drop'">Ear Drop</option>
+                                <option [value]="'ear ointment'">Ear Ointment</option>
+                                <option [value]="'eye drops'">Eye Drop</option>
+                                <option [value]="'eyes ointment'">Eye Ointment</option>
+                                <option [value]="'inj'">Injection</option>
+                                <option [value]="'mixture'">Mixture</option>
+                                <option [value]="'ointment'">Ointment</option>
+                                <option [value]="'pess'">Pessary</option>
+                                <option [value]="'powder'">Powder</option>
+                            </select>
+
+                            <br>
+                            Meal:
+                            <label [for]="'medicine-meal-state-' + i + '-' + j" (click)="medicine.meal = 'before'">
+                                <input type="radio" [name]="'medicine-meal-state-' + i" value="before" [(ngModel)]="medicine.meal" title="before meal"> Before
+                            </label>
+                            <label [for]="'medicine-meal-state-' + i + '-' + j" (click)="medicine.meal = 'after'">
+                                <input type="radio" [name]="'medicine-meal-state-' + i" value="after" [(ngModel)]="medicine.meal" title="after meal"> After
+                            </label>
+
+                            &nbsp;&nbsp;&nbsp;
+                            Frequency:
+                            <label [for]="'medicine-frequency-' + i + '-' + j" (click)="medicine.frequency.morning = true">
+                                <input type="checkbox" [name]="'medicine-frequency-' + i" [value]="true" [(ngModel)]="medicine.frequency.morning" title="morning"> M
+                            </label>
+                            <label [for]="'medicine-frequency-' + i + '-' + j" (click)="medicine.frequency.afternoon = true">
+                                <input type="checkbox" [name]="'medicine-frequency-' + i" [value]="true" [(ngModel)]="medicine.frequency.afternoon" title="afternoon"> A
+                            </label>
+                            <label [for]="'medicine-frequency-' + i + '-' + j" (click)="medicine.frequency.evening = true">
+                                <input type="checkbox" [name]="'medicine-frequency-' + i" [value]="true" [(ngModel)]="medicine.frequency.evening" title="evening"> E
+                            </label>
+                            <label [for]="'medicine-frequency-' + i + '-' + j" (click)="medicine.frequency.night = true">
+                                <input type="checkbox" [name]="'medicine-frequency-' + i" [value]="true" [(ngModel)]="medicine.frequency.night" title="night"> N
+                            </label>
+                            <label [for]="'medicine-frequency-' + i + '-' + j" (click)="medicine.frequency.sos = true">
+                                <input type="checkbox" [name]="'medicine-frequency-' + i" [value]="true" [(ngModel)]="medicine.frequency.sos" title="sos"> SOS
+                            </label>
+                        </p>
+                    </div>
+
+                    <!-- Personal History -->
+                    <div fxLayout="column" class="padded"><span>Personal History: </span>
+                        <div>Exercise:
+                            <input type="number" step="1" min="1" max="5" title="exercise"
+                                   placeholder="1 to 5 only" [(ngModel)]="model.personalHistory.exercise"></div>
+                        <div>Smoking Habit:
+                            <input type="number" step="1" min="1" max="5" title="smoking habit"
+                                   placeholder="1 to 5 only" [(ngModel)]="model.personalHistory.smokingHabit"></div>
+                        <div>Drinking Habit:
+                            <input type="number" step="1" min="1" max="5" title="drinking habit"
+                                   placeholder="1 to 5 only" [(ngModel)]="model.personalHistory.drinkingHabit"></div>
+                        <div>Drug Compliance:
+                            <input type="number" step="1" min="1" max="5" title="drug compliance"
+                                   placeholder="1 to 5 only" [(ngModel)]="model.personalHistory.drugCompliance"></div>
+                        <div>Dietary Compliance:
+                            <input type="number" step="1" min="1" max="5" title="dietary compliance"
+                                   placeholder="1 to 5 only" [(ngModel)]="model.personalHistory.dietaryCompliance"></div>
+                        <div>Economic Status:
+                            <label [for]="'ecomonic-status-' + i" (click)="model.personalHistory.economicStatus = '1'">
+                                <input type="radio" [name]="'ecomonic-status-' + i"
+                                       [value]="'1'" [(ngModel)]="model.personalHistory.economicStatus"
+                                       title="economic status cannot pay"> Cannot Pay
+                            </label>
+                            <label [for]="'ecomonic-status-' + i" (click)="model.personalHistory.economicStatus = '3'">
+                                <input type="radio" [name]="'ecomonic-status-' + i"
+                                       [value]="'3'" [(ngModel)]="model.personalHistory.economicStatus"
+                                       title="economic status can pay with negotiation"> Can pay with negotiation
+                            </label>
+                            <label [for]="'ecomonic-status-' + i" (click)="model.personalHistory.economicStatus = '5'">
+                                <input type="radio" [name]="'ecomonic-status-' + i"
+                                       [value]="'5'" [(ngModel)]="model.personalHistory.economicStatus"
+                                       title="economic status can pay easily"> Can pay easily
+                            </label>
+                        </div>
+                        <div>Lifestyle:
+                            <label [for]="'lifestyle-' + i" (click)="model.personalHistory.lifeStyle = 'sedentary'">
+                                <input type="radio" [name]="'lifestyle-' + i"
+                                       [value]="'sedentary'" [(ngModel)]="model.personalHistory.lifeStyle"
+                                       title="lifestyle sendetary"> sedentary
+                            </label>
+                            <label [for]="'lifestyle-' + i" (click)="model.personalHistory.lifeStyle = 'moderate'">
+                                <input type="radio" [name]="'lifestyle-' + i"
+                                       [value]="'moderate'" [(ngModel)]="model.personalHistory.lifeStyle"
+                                       title="lifestyle sendetary"> moderate
+                            </label>
+                            <label [for]="'lifestyle-' + i" (click)="model.personalHistory.lifeStyle = 'active'">
+                                <input type="radio" [name]="'lifestyle-' + i"
+                                       [value]="'active'" [(ngModel)]="model.personalHistory.lifeStyle"
+                                       title="lifestyle sendetary"> active
+                            </label>
+                        </div>
+
+                        <div>Occupation:
+                            <input type="text" title="patient occupation" placeholder="occupation of patient"
+                                   [(ngModel)]="model.personalHistory.occupationText"></div>
+                    </div>
+
+                    <!-- Diet chart -->
+                    <div fxLayout="column" class="padded" *ngIf="model.dietChart.meals.length">
+                        <span>Diet chart: </span>
+                        <div><input type="checkbox" title="is weekend or holiday"
+                                    [(ngModel)]="model.dietChart.weekend"> Is Weekend?</div>
+
+                        <div *ngFor="let meal of model.dietChart.meals; let j = index">
+                            <input type="number" step="1" min="0" max="23" title="time of meal"
+                                   placeholder="in 24-hours format" [(ngModel)]="meal.time">
+                            <input type="text" title="name of meal"
+                                   placeholder="anything you can spell" [(ngModel)]="meal.name">
+                            <input type="number" step="1" min="0" max="23" title="quantity of meal"
+                                   placeholder="in 24-hours format" [(ngModel)]="meal.quantity">
+                            <input type="text" title="quantityUnit of meal"
+                                   placeholder="try to be as standardized as possible" [(ngModel)]="meal.quantityUnit">
+
+                            <a (click)="model.dietChart.meals.splice(j, 1)" style="cursor: pointer">
+                                <mat-icon>close</mat-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Investigation -->
+                    <div fxLayout="column" class="padded" *ngIf="model.investigations.length">
+                        <span>Investigations: </span>
+                        <div *ngFor="let investigation of model.investigations; let j = index">
+                            <select [(ngModel)]="investigation.type" title="investigation type">
+                                <option value="pathology">Pathology</option>
+                                <option value="radiology">Radiology</option>
+                            </select>
+
+                            <input type="text" title="investigation name" placeholder="investigation name"
+                                   [(ngModel)]="investigation.name" >
+                            <br *ngIf="investigation.alternatives.length">
+                            <a *ngFor="let alternative of investigation.alternatives" (click)="investigation.text = alternative">
+                                {{ alternative }} &nbsp;&nbsp;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div fxLayout="column" class="padded">
+                        <span>Remarks: </span>
+
+                        <input type="text" title="remarks" placeholder="remark"
+                               [(ngModel)]="model.remarks.remark" style="width: 100%">
+                        <br>
+                        <input type="number" title="duration" [(ngModel)]="model.remarks.duration"
+                               placeholder="duration"
+                        >
+                        <select [(ngModel)]="model.remarks.durationUnit" title="Unit of duration of remark">
+                            <option value="Day(s)">Day(s)</option>
+                            <option value="Week(s)">Week(s)</option>
+                            <option value="Month(s)">Month(s)</option>
+                        </select>
+                    </div>
+
+                    <!-- Past Illness -->
+                    <div fxLayout="column" class="padded" *ngIf="model.pastIllness.length">
+                        <span>Past Illness: </span>
+
+                        <div *ngFor="let illness of model.pastIllness; let j = index">
+                            <input type="text" title="past illness of patient" placeholder="past illness"
+                                   [(ngModel)]="illness" style="width: 80%">
+                            <a (click)="model.pastIllness.splice(j, 1)" style="cursor: pointer">
+                                <mat-icon>close</mat-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Past Medications -->
+                    <div fxLayout="column" class="padded" *ngIf="model.pastMedications.length">
+                        <span>Past Medications: </span>
+
+                        <div *ngFor="let medication of model.pastMedications; let j = index">
+                            <input type="text" title="past medication of patient" placeholder="past medication"
+                                   [(ngModel)]="medication" style="width: 80%">
+                            <a (click)="model.pastMedications.splice(j, 1)" style="cursor: pointer">
+                                <mat-icon>close</mat-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Past Illness -->
+                    <div fxLayout="column" class="padded" *ngIf="model.pastProcedures.length">
+                        <span>Past Procedures: </span>
+
+                        <div *ngFor="let procedure of model.pastProcedures; let j = index">
+                            <input type="text" title="past procedure of patient" placeholder="past procedure"
+                                   [(ngModel)]="procedure" style="width: 80%">
+                            <a (click)="model.pastProcedures.splice(j, 1)" style="cursor: pointer">
+                                <mat-icon>close</mat-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Family History -->
+                    <div fxLayout="column" class="padded" *ngIf="model.familyHistory.length">
+                        <span>Family History: </span>
+
+                        <div *ngFor="let history of model.familyHistory; let j = index">
+                            <input type="text" title="relation of family History" [(ngModel)]="history.relation">
+                            <input type="text" title="symptoms of family history" [(ngModel)]="history.text">
+                        </div>
+                    </div>
+
+                    <!-- Allergies  -->
+                    <div fxLayout="column" class="padded" *ngIf="model.allergies.length">
+                        <span>Allergies: </span>
+
+                        <div *ngFor="let allergy of model.allergies; let j = index">
+                            <div class="padded" fxLayout="column">
+                                <input type="text"
+                                       *ngFor="let substance of allergy.substances; let k = index;"
+                                       [(ngModel)]="substance"
+                                       title="reaction of the allergy">
+
+                                <a (click)="allergy.substances.splice(k, 1)" style="cursor: pointer">
+                                    <mat-icon>close</mat-icon>
+                                </a>
+                            </div>
+                            <input type="text" title="reaction of the allergy" [(ngModel)]="allergy.text" style="width: 100%">
+
+                        </div>
+                    </div>
+
+                    <button mat-flat-button color="warn"
+                            (click)="removeThisModel(i)">
+                        Remove above model entirely</button>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        </mat-card-content>
+    </mat-card>
+</div>

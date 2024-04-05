@@ -1,0 +1,296 @@
+<div fxLayout="column" style="overflow: scroll">
+    <div fxLayout="row fullWidth" fxLayoutAlign="space-between center" style="padding-left: 15px;padding-right: 15px;">
+        <h3 class="custom-font-style">Create Patient</h3>
+        <mat-icon *ngIf="searchBegin && patientList.length > 0" style="margin-left: 25px"
+                  class="a-icon"
+                  (click)="searchBegin=false;showNoPatientFoundScreen=false">add
+        </mat-icon>
+        <div fxShow="false" fxShow.xs="true" fxShow.sm="true" fxLayout="row"
+                 fxLayoutAlign="end center"  style="margin-left: 10px;">
+          <mat-icon style="color:#009688" (click)="navigateBack()">cancel</mat-icon>
+        </div>
+    </div>
+
+    <div fxLayout="column" *ngIf="!searchBegin" style="overflow:auto;padding-right: 15px;padding-left: 15px">
+        <div fxLayout="row wrap" style="margin-bottom: 5px" class="fullWidth"
+        fxLayout.xs="column" fxLayout.sm="column" fxLayoutGap="5px">
+            <div fxLayout="row" fxFlex.xs="100" fxFlex="49" style="margin-bottom: 5px">
+                <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                     fxLayoutAlign="start center" fxFlex style="margin-right: 8px;">
+                    <mat-icon fxFlex="5" class="secondaryColor">phone</mat-icon>
+                    <mat-form-field fxFlex="90" style="margin-left: 10px">
+                        <input class="inputFieldStyle" matInput autofocus
+                               autocomplete="off" [matAutocomplete]="userSelectionList"
+                               [(ngModel)]="form_data.patient_mobile" (keyup)="searchPhoneNumber(form_data.patient_mobile)"
+                        />
+
+                        <mat-autocomplete #userSelectionList="matAutocomplete">
+                            <mat-option *ngFor="let patient of partialSearchResults"
+                                        (click)="form_data.user_mobile = patient.mobile; searchPhoneNumber(patient.mobile)"
+                                        [value]="patient.user_login">
+                                <span>{{patient.name}}</span> | <small>Mobile: {{patient.mobile}}</small>
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-placeholder class="placeholder">Contact Number</mat-placeholder>
+
+                    </mat-form-field>
+
+                    <div fxLayout="row" fxFlex="5" class="fullWidth" fxLayoutAlign="center center">
+                        <mat-spinner diameter="15" strokeWidth="3"
+                                     *ngIf="general_settings.isSearchingPhoneNumber"></mat-spinner>
+                        <mat-icon class="iconStyle_big" *ngIf="general_settings.foundPatientsData">
+                            check
+                        </mat-icon>
+                    </div>
+
+                    <mat-select placeholder="Select Country" [(ngModel)]="form_data.country" class="country-selection">
+                        <mat-option *ngFor="let country of _util.countries" [value]="country.name"
+                          (click)="setCountry(country, $event)" [matTooltip]="country.name">
+                            {{ country.icon }}
+                        </mat-option>
+                    </mat-select>
+                </div>
+
+                <mat-checkbox class="a-vertical-checkbox a-mobile-is-mine"
+                    [(ngModel)]="isMobileMine"
+                >
+                    <p class="inputFieldStyle remove-margin-padding">Mine</p>
+                </mat-checkbox>
+            </div>
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box fullWidth"
+                 *ngIf="!isMobileMine"
+                 fxLayoutAlign="start center "
+                 fxFlex.xs="100" fxFlex="49"
+                 style="margin-bottom: 5px">
+                <mat-icon fxFlex="5" class="secondaryColor">fingerprint</mat-icon>
+
+                <mat-form-field fxFlex="90" style="margin-left: 10px">
+                    <input class="inputFieldStyle" matInput
+                    autocomplete="off"
+                           [(ngModel)]="form_data.user_name"
+                    />
+                    <mat-placeholder class="placeholder">Contact Person</mat-placeholder>
+                </mat-form-field>
+            </div>
+
+
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box fullWidth"
+                 *ngIf="!isMobileMine"
+                 fxLayoutAlign="start center "
+                 fxFlex.xs="100" fxFlex="49"
+                 style="margin-bottom: 5px">
+                <mat-icon fxFlex="5" class="secondaryColor">child_friendly</mat-icon>
+
+                <mat-form-field fxFlex="90" style="margin-left: 10px">
+                    <input class="inputFieldStyle" matInput
+                            [(ngModel)]="form_data.patient_relation"
+                           [matAutocomplete]="relations"
+                    />
+
+                    <mat-placeholder class="placeholder">Relations</mat-placeholder>
+
+                    <mat-autocomplete #relations="matAutocomplete">
+                      <mat-option *ngFor="let option of patientRelation | search : form_data.patient_relation" [value]="option"><p class="inputFieldStyle">{{option}}</p></mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+
+
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                 fxLayoutAlign="start center " fxFlex.xs="100" fxFlex="49" style="margin-bottom: 5px">
+                <mat-icon  class="secondaryColor">person</mat-icon>
+                <mat-form-field fxFlex="90" style="margin-left: 10px">
+                    <input type="text"  matInput class="inputFieldStyle"
+                           [(ngModel)]="form_data.patient_name" [matAutocomplete]="patientListAuto"/>
+
+                        <mat-placeholder class="placeholder">Patient Name</mat-placeholder>
+
+                    <mat-autocomplete #patientListAuto="matAutocomplete">
+                        <mat-option
+                                *ngFor="let patient of general_settings.patientListFound.patients | search:form_data.patient_name"
+                                [value]="patient.name"
+                                (onSelectionChange)="setFormDataToSearchedPatient($event,patient,true)">
+                            <p class="font_patient_title custom-font-style">{{patient.name}} |
+                                {{_util.getTimeDifferenceInYears(patient.date_of_birth)}} years</p>
+                        </mat-option>
+                    </mat-autocomplete>
+
+                </mat-form-field>
+            </div>
+
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                 fxLayoutAlign="start center " style="margin-bottom: 5px" fxFlex.xs="100" fxFlex="49">
+                <mat-icon class="secondaryColor">date_range</mat-icon>
+                <mat-form-field fxFlex="90" style="margin-left: 10px">
+                    <input matInput  type="number" class="inputFieldStyle"
+                    autocomplete="off"
+                           [(ngModel)]="form_data.patient_age"/>
+
+                        <mat-placeholder class="placeholder">Patient Age</mat-placeholder>
+
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box fullWidth"
+                 fxLayoutAlign="start center "
+                 fxFlex.xs="100" fxFlex="49"
+                 style="margin-bottom: 5px">
+                <mat-icon  class="secondaryColor">location_on</mat-icon>
+
+                <mat-form-field fxFlex="90" style="margin-left: 10px">
+                    <input class="inputFieldStyle" matInput
+                           [(ngModel)]="form_data.address"
+                           autocomplete="off"
+                           (focusout)="saveAddressForFutureUsage()"
+                    />
+
+                    <mat-placeholder class="placeholder">Address</mat-placeholder>
+
+                </mat-form-field>
+                <mat-icon *ngIf="isAddressAlreadyStored" fxFlex="5" class="secondaryColor" style="margin-right: 10px"
+                          (click)="deleteSavedAddress()">remove_circle
+                </mat-icon>
+            </div>
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                 fxLayoutAlign="start center "
+                 fxFlex.xs="100" fxFlex="43"
+                 style="margin-bottom: 5px;"
+
+                 >
+
+                <!--<mat-form-field class="fullWidth">
+                  <mat-select placeholder="Gender" [(ngModel)]="form_data.patient_gender">
+                    <mat-option *ngFor="let patient_gender of ['male','female']" [value]="patient_gender">{{patient_gender}}
+                    </mat-option>
+                  </mat-select>
+                    </mat-form-field>
+
+                -->
+
+                <mat-checkbox [checked]="genderCheckBox[0]" (change)="changeGender($event,0)"><span
+                        class="inputFieldStyle">Male</span></mat-checkbox>
+                <mat-checkbox [checked]="genderCheckBox[1]" (change)="changeGender($event,1)" style="margin-left: 10px;"><span
+                        class="inputFieldStyle">Female</span></mat-checkbox>
+
+
+            </div>
+          <input matInput [ngxMatDatetimePicker]="consultAgainDatePicker" placeholder="Choose a date"
+                 [value]="this._util.getScheduleCalendarDefaultStartAt()"
+                 [hidden]="true" (dateChange)="createConsultationForPatientWithDate($event)">
+          <ngx-mat-datetime-picker #consultAgainDatePicker
+                                   stepMinute="15" touchUi="true" showSpinners="true"
+                                   enableMeridian="true"
+                                   [startAt]="this._util.getScheduleCalendarDefaultStartAt()"
+                                   [hidden]="true"></ngx-mat-datetime-picker>
+            <button mat-icon-button fxLayout="row"
+                 fxLayoutAlign="center center" fxFlex="6"
+                 style="margin-bottom: 5px; margin-left:15px" color="primary" aria-label="Consult with a specific date"
+                    (click)="consultAgainDatePicker.open();"
+            >
+              <mat-icon>calendar_today</mat-icon>
+            </button>
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                 fxLayoutAlign="start center "
+                 fxFlex.xs="100" fxFlex="49" style="margin-bottom: 5px"
+                 *ngIf="arr_registrationChannels.length > 0">
+                <mat-form-field class="fullWidth">
+                    <mat-select placeholder="Registration Channel" [(ngModel)]="form_data.center_code">
+                        <mat-option *ngFor="let channel of arr_registrationChannels" class="font_patient_title"
+                                    [value]="channel.code"
+                                    (onSelectionChange)="setChannelInformation(channel,$event)">
+                            {{channel.name}} - <small><strong>{{channel.channel_name}}</strong></small>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+
+            <div fxLayout="row" class="boxLayout inputBoxBorder a-create-patient-input-box"
+                 fxLayoutAlign="start center " style="margin-bottom: 5px"
+                 fxFlex.xs="100" fxFlex="49" *ngIf="currentUser.type==='assistant'">
+                <mat-form-field class="fullWidth">
+                    <mat-select placeholder="Available Doctors" [(ngModel)]="doctor.name">
+                        <mat-option *ngFor="let doctor of arr_bindedDoctors" [value]="doctor.name"
+                                    (onSelectionChange)="setDoctorId(doctor,$event)">{{doctor.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+
+
+        <div fxLayout="row" style="margin-bottom: 5px">
+            <div fxLayout="column" fxLayoutAlign="center center" class="fullWidth">
+                <mat-spinner *ngIf="general_settings.creatingConsultation" diameter="25" strokeWidth="3"
+                             style="margin-top: 15px"></mat-spinner>
+                <button mat-raised-button class="custom-font-style fullWidth"
+                        style="background-color: #80cbc4;color: white"
+                        (click)="createConsultation()" *ngIf="!general_settings.creatingConsultation">
+                    Create Consultation
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div fxLayout="row" class="fullWidth" *ngIf="progressBar" fxLayoutAlign="center center">
+        <mat-spinner diameter="30" strokeWidth="3" style="margin-top: 15px"></mat-spinner>
+    </div>
+
+    <div *ngIf="searchBegin && patientList.length > 0">
+        <mat-list>
+            <mat-list-item *ngFor="let patient of patientList " (click)="setFormDataToSearchedPatient(false,patient)">
+                <div matListAvatar style="border-radius: 60px;background: #80cbc4"></div>
+                <h4 matLine class="custom-font-style font_patient_title">{{patient.name}}</h4>
+                <p matLine class="custom-font-style font_patient_infor">{{patient.date_of_birth}} Years Old |
+                    {{patient.gender}}</p>
+            </mat-list-item>
+        </mat-list>
+
+    </div>
+
+    <div *ngIf="showNoPatientFoundScreen && searchBegin">
+        <div fxLayout="column" fxLayoutAlign="center center">
+            <h4 class="custom-font-style">No Patient Associated With this number</h4>
+            <button mat-raised-button (click)="searchBegin=false;showNoPatientFoundScreen=false"
+                    class="custom-font-style">
+                Create Patient
+            </button>
+
+        </div>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="start start" style="padding-left: 15px; padding-right: 15px; padding-top: 36px;"
+      [hidden]="currentUser.type==='assistant'"
+    >
+      <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%;">
+        <h3 class="remove-margin-padding">Bulk Upload</h3>
+        <a mat-icon-button aria-label="Download sample" href="/assets/csv/sample-patients-bulk-upload.csv" matTooltip="Download sample .csv file">
+            <mat-icon>get_app</mat-icon>
+          </a>
+      </div>
+
+      <h5 class="remove-margin-padding">Create multiple patient at once, put all your patients data in a .csv file and select. This will also create one consultation of this time, in order for them to appear in search. Select a .csv file and get going</h5>
+
+      <input #fileInput type="file" (change)="onSelectingCsv($event)" style="display:none;" />
+      <button mat-raised-button color="primary" (click)="fileInput.click()" [hidden]="csvLoadingMessage.length">
+        <mat-icon>view_column</mat-icon>
+        select file
+      </button>
+
+      <button [hidden]="! csvLoadingMessage.length" mat-stroked-button>{{ csvLoadingMessage }}</button>
+
+
+
+    </div>
+</div>

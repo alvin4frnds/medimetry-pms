@@ -1,0 +1,9 @@
+<!-- if not logged in -->
+<app-navigation-bar *ngIf="!isLoginRequired && !_utilityService.application_data.showCanvas && !isPageStandAlone"></app-navigation-bar>
+<app-canvas-drawing *ngIf="!isLoginRequired && _utilityService.application_data.showCanvas && !isPageStandAlone"></app-canvas-drawing>
+
+<!-- if logged in -->
+<app-login *ngIf="isLoginRequired && !_utilityService.application_data.showCanvas && !isPageStandAlone"></app-login>
+
+<!-- if a page is standalone, then only. Remove everything else, and show that page -->
+<router-outlet *ngIf="isPageStandAlone"></router-outlet>

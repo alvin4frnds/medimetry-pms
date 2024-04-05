@@ -1,0 +1,103 @@
+mat-list-item.notification {
+    height: fit-content !important;
+    padding-top: 10px;
+}
+
+mat-list-item.notification h4 {
+    color: black;
+    line-height: 1;
+}
+
+mat-list-item.notification span.custom-font-style {
+    white-space: normal;
+    font-size: 12px;
+    width: 100%;
+}
+
+mat-list-item.notification h4.custom-font-style {
+    white-space: normal;
+}
+
+button.mat-icon-button {
+    color: red;
+}
+
+mat-list-item.notification.mat-list-item.unread {
+    opacity: 1;
+    background-color: lightyellow;
+}
+
+mat-list-item.notification.mat-list-item.read {
+    opacity: 0.5;
+    background-color: white;
+}
+
+mat-list.notifications {
+    height: calc(100vh - 160px) !important;
+    overflow-y: scroll !important;
+}
+
+span.receiver-notification-status {
+    font-size: 10px;
+    padding-top: 10px;
+    color: darkgray;
+    opacity: 1;
+}
+
+span.receiver-notification-status > mat-icon {
+    font-size: 10px;
+    padding-top: 10px;
+    width: 10px;
+    color: darkgray;
+    opacity: 1;
+}
+
+:host::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+  height: 0px;
+
+}
+
+::ng-deep mat-select .mat-select-arrow {
+  opacity: 0;
+
+}
+
+::ng-deep mat-select[ng-reflect-model=''] .mat-select-arrow {
+  opacity: 1;
+
+}
+
+mat-form-field#notification-filter-field {
+
+}
+
+::ng-deep mat-form-field#notification-filter-field .mat-form-field-infix { border-top-width: 0; }
+::ng-deep mat-form-field#notification-filter-field .mat-form-field-wrapper { padding-bottom: 0; }
+::ng-deep .mat-form-field-underline { display: none; }
+
+mat-form-field#notification-filter-field mat-label {
+    font-size: 1.17em;
+    color: black;
+    font-weight: bold
+}
+
+i.material-icons.on-the-right {
+    position: absolute;
+    top: 13px;
+    bottom: 0;
+    right: 8px;
+}
+
+i.material-icons.green {
+    color: green;
+}
+
+i.material-icons.blue {
+    color: blue;
+
+}
+
+mat-list-item.notification mat-list-item-content {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}

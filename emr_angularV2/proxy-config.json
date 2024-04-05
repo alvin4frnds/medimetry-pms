@@ -1,0 +1,8 @@
+{
+  "/api/v1/*": {
+    "target":"/",
+    "changeOrigin":false,
+    "logLevel":"debug",
+    "secure":true
+  }
+}

@@ -1,0 +1,35 @@
+<div fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Attachment</strong></p>
+    <mat-icon class="a-icon iconStyle_big" (click)="deleteSection()"
+    *ngIf="!_util.previousSoapSettings.previousSoapActivated"
+    style="margin-bottom: -15px; margin-right: 6px;">close</mat-icon>
+  </div>
+
+
+
+      <div fxLayout="row wrap" fxLayoutAlign="start center" class="inputBoxBorder" style="padding: 15px; padding-right: 5px;"  fxLayoutGap="15px"  >
+        <div fxLayout="row wrap" fxLayoutGap="10px" *ngFor="let image of _util.current_soap_model.attachments; let position=index">
+
+          <div *ngIf="image.isDummy && !image.processing" >
+              <input type="file" #uploadImage style="display: none;" (change)="onFileSelect($event,position)">
+              <mat-icon class="dashboard-cancel-icon-syle a-big-icon iconStyle_big" (click)="uploadImage.click()">camera_alt</mat-icon>
+          </div>
+          <div *ngIf="image.isDummy && image.processing" >
+            <mat-spinner diameter="15" strokeWidth="3"
+            style="margin-top: 15px"></mat-spinner>
+          </div>
+
+
+          <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!image.isDummy && !image.processing" >
+            <a href="{{ _util.getAttachmentHref(image.url) }}" target="_blank">
+              <img src="{{ _util.getAttachmentThumb(image.url) }}" height="50" width="60"/>
+            </a>
+                <p class="complaint-text showPointer" style="color: blue" (click)="deleteRow(position)"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                ><strong>Delete</strong></p>
+
+          </div>
+        </div>
+      </div>
+    </div>

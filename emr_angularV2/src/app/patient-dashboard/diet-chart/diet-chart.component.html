@@ -1,0 +1,104 @@
+<div fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Diet Chart</strong></p>
+    <div style="margin-bottom: -25px;">
+
+      <button [hidden]="this._util.current_soap_model.diet_chart.length > 1" mat-icon-button class="clickable" (click)="getPreviousMeals()"
+              style="margin-bottom: 10px; margin-right: 6px; color: #009688;"
+              matTooltip="copy all meals from previous diet chart">
+        <mat-icon style="margin-bottom: 12px;">
+          file_copy
+        </mat-icon>
+      </button>
+
+      <mat-icon (click)="deleteSection()"
+                style="margin-right: 6px;"
+                class="iconStyle_big a-icon" *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+        close
+      </mat-icon>
+    </div>
+  </div>
+
+  <div class="inputBoxBorder" fxLayout="row wrap" style="padding-right: 5px;">
+    <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center"
+         *ngFor="let meal of _util.current_soap_model.diet_chart; let position = index">
+      <div fxLayout="row" fxLayoutAlign="space-between center"
+           [hidden]="(position < (_util.current_soap_model.diet_chart.length - 1)) && _util.current_soap_model.diet_chart[position - 1] && (_util.current_soap_model.diet_chart[position - 1].weekend == meal.weekend)"
+           fxFlex="20" [ngClass]="this.screen_detector.deviceType.isMobile ? 'meal-fields-mobile': 'meal-fields-desktop'">
+        <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 15px 10px 0px;"><strong>-</strong></p>
+        <mat-form-field style="width: 80%;">
+          <mat-label *ngIf="!this.screen_detector.deviceType.isMobile">Select day</mat-label>
+          <mat-label *ngIf="this.screen_detector.deviceType.isMobile">day</mat-label>
+          <mat-select [(value)]="meal.weekend" tabIndex="-1" [disabled]="_util.previousSoapSettings.previousSoapActivated">
+            <mat-option (click)="selectNewDay(position)"  value="false">Mon to Fri</mat-option>
+            <mat-option (click)="selectNewDay(position)"  value="true">Sat - Sun</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+      <mat-form-field style="width: 80%;"
+        [hidden]="(position < (_util.current_soap_model.diet_chart.length - 1)) && _util.current_soap_model.diet_chart[position - 1] && (_util.current_soap_model.diet_chart[position - 1].meal_time == meal.meal_time) && (position < (_util.current_soap_model.diet_chart.length - 1)) && _util.current_soap_model.diet_chart[position - 1] && (_util.current_soap_model.diet_chart[position - 1].weekend == meal.weekend)"
+        fxFlex="20" [ngClass]="this.screen_detector.deviceType.isMobile ? 'meal-fields-mobile': 'meal-fields-desktop'">
+        <mat-label *ngIf="!this.screen_detector.deviceType.isMobile">select meal time</mat-label>
+        <mat-label *ngIf="this.screen_detector.deviceType.isMobile">time</mat-label>
+        <mat-select [(value)]="meal.meal_time" tabIndex="-1" [disabled]="_util.previousSoapSettings.previousSoapActivated">
+          <mat-option *ngFor="let time of meal_times "
+                      (click)="AddNewTime(meal, position)"
+                      value="{{ time.hour }}">{{ time.hour > 12 ? time.hour -12 : time.hour }} : 00
+            <small>({{time.day_state}})</small>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field style="width: 100%;" fxFlex="20" [ngClass]="this.screen_detector.deviceType.isMobile ? 'meal-fields-mobile': 'meal-fields-desktop'">
+        <input matInput
+               [attr.id]="'meal-name-input-' + position"
+               [disabled]="_util.previousSoapSettings.previousSoapActivated"
+               (keydown)="addNewMeal(position)"
+               [(ngModel)]="meal.name"
+               (input)="showMealSuggestions(meal.name,position)"
+               (keyup.enter)="sendFocusToNextElement(position)"
+               (blur)="saveMealName(meal, position)"
+               [matAutocomplete]="meal_auto">
+        <mat-placeholder class="placeholder" *ngIf="!this.screen_detector.deviceType.isMobile">enter meal name</mat-placeholder>
+        <mat-placeholder class="placeholder" *ngIf="this.screen_detector.deviceType.isMobile">name</mat-placeholder>
+
+        <mat-autocomplete #meal_auto="matAutocomplete" class="keyboard_open">
+          <mat-option *ngFor="let suggestion of meal_suggestions | search : meal.name"
+                      [value]="suggestion.name"
+                      (onSelectionChange)="selectSuggestion(suggestion,position,$event)">
+            <p class="complaint-text custom-font-style">{{suggestion.name}}</p>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="20"
+           [ngClass]="this.screen_detector.deviceType.isMobile ? 'meal-fields-mobile': 'meal-fields-desktop'">
+        <mat-form-field style="width: 80%;">
+          <input matInput
+                 [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                 (input)="showMealUnitSuggestions(meal.quantity_values,position)"
+                 [matAutocomplete]="meal_quant_auto"
+                 (blur)="saveRow(meal)"
+                 [(ngModel)]="meal.quantity_values">
+          <mat-placeholder class="placeholder" *ngIf="!this.screen_detector.deviceType.isMobile">enter quantity</mat-placeholder>
+          <mat-placeholder class="placeholder" *ngIf="this.screen_detector.deviceType.isMobile">quantity</mat-placeholder>
+          <mat-autocomplete #meal_quant_auto="matAutocomplete" class="keyboard_open">
+            <mat-option *ngFor="let suggestion of mealUnitSuggestions | search : meal.quantity_values"
+                        [value]="suggestion.term_body"
+                        (onSelectionChange)="selectSuggestion(suggestion,position,$event)">
+              <p class="complaint-text custom-font-style">{{suggestion.term_body}}</p>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-icon [hidden]="(this._util.current_soap_model.diet_chart.length == position+1) || _util.previousSoapSettings.previousSoapActivated" (click)="deleteMeal(position, meal.id)"
+                  style="margin-right: 6px;"
+                  class="iconStyle_big a-icon" *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+          close
+        </mat-icon>
+      </div>
+
+    </div>
+  </div>
+
+</div>

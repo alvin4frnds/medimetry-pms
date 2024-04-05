@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MediMetry Emr | Online Doctor Practice Tool | Best EMR in india </title>
+    <base href="/">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name = "format-detection" content = "telephone=no">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="/assets/fonts/css.css" rel="stylesheet">
+    <link href="/assets/fonts/icon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#008081">
+
+    <style>
+        #initial-loader-container {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lds-ring {
+          display: inline-block;
+          position: relative;
+          width: 80px;
+          height: 80px;
+        }
+        .lds-ring div {
+          box-sizing: border-box;
+          display: block;
+          position: absolute;
+          width: 64px;
+          height: 64px;
+          margin: 8px;
+          border: 8px solid teal;
+          border-radius: 50%;
+          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+          border-color: teal transparent transparent transparent;
+        }
+        .lds-ring div:nth-child(1) {
+          animation-delay: -0.45s;
+        }
+        .lds-ring div:nth-child(2) {
+          animation-delay: -0.3s;
+        }
+        .lds-ring div:nth-child(3) {
+          animation-delay: -0.15s;
+        }
+        @keyframes lds-ring {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+    </style>
+
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src='https://dr15zo9o33078.cloudfront.net/script/render-header.js'></script>
+    <script>
+        var hcpContext;
+        
+        function docereeLogIn(userObj) {
+            if (!hcpContext) {
+                hcpContext = userObj;
+                if (typeof setDocereeContext === 'function') {
+                    setDocereeContext(hcpContext);
+                }
+            }
+        };
+
+        function docereeLogOut() {
+            document.cookie = _docereeContext + '=; Max-Age=-99999999;';
+        };
+    </script> -->
+</head>
+<body>
+<script>
+    var global = global || window;
+    var Buffer = Buffer || [];
+    var process = process || {
+      env: { DEBUG: undefined },
+      version: []
+    };
+</script>
+
+<div id="initial-loader-container">
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+</div>
+
+<app-root></app-root>
+
+</body>
+
+<script>
+    function failedRecievedUserData(data) {
+    }
+    function successfullyRecievedUserData(data) {
+        window['getUserByToken'].component.outSideCalledFunction(data);
+    }
+
+    function realignMeToVew(element) {
+        setTimeout(function () {
+            if (window.outerWidth > 786) return false;
+
+            if (element.target) element = element.target; // if passed argument is Event enstead of Element
+
+            if (! /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+                return false;
+
+            if (! element) return false;
+            if (element.getBoundingClientRect().top < window.outerHeight) return false;
+
+            element.scrollIntoView({behaviour: "smooth", block: "start"});
+            if (element.getBoundingClientRect().top < 100)
+                document.getElementById("patient-dashboard-container").scrollBy({top: -86, behaviour: "smooth"});
+
+            return true;
+        }, 100);
+    }
+
+    window.onresize = function() {
+        setTimeout(function() {
+            document.querySelectorAll("#patient-dashboard-container input").forEach( function (el) { el.addEventListener("focus", realignMeToVew) } );
+        }, 200);
+    };
+</script>
+
+</html>

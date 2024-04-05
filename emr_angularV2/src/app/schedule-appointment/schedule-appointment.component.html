@@ -1,0 +1,105 @@
+<div id="schedule-appointment">
+    <div class="stats">
+        <mat-grid-list [cols]="isMobile ? 1 : 2" rowHeight="40">
+            <mat-grid-tile style="font-weight: 500;">
+                <button mat-icon-button aria-label="Previous day" color="primary"
+                    (click)="previousDay()"
+                >
+                    <mat-icon>navigate_before</mat-icon>
+                </button>
+
+                {{ currentDate.format('ddd') }}, &nbsp;
+                <span class="count date">{{ currentDate.format('D') }}</span>
+                &nbsp; {{ currentDate.format('MMM') }}
+
+                <button mat-icon-button aria-label="Next day" color="primary"
+                    (click)="nextDay()"
+                >
+                    <mat-icon>navigate_next</mat-icon>
+                </button>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <button mat-stroked-button color="primary" class="small-button">
+                    Today's Confirmed <span class="my-badge">{{ todaysConfirmed }}</span>
+                </button>
+
+                <button mat-stroked-button color="warn" class="small-button">
+                    Total Waiting <span class="my-badge warn">{{ totalWaiting }}</span>
+                </button>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+    <div class="orientation">
+        <div id="side" class="height">
+
+            <div class="bb-grey" *ngFor="let timeslot of timeslots" [attr.id]="'Timeslot-' + timeslot.timecode">
+                <div class="time">{{ timeslot.startTime }}</div>
+                    <div class="grid-container grid-container-fit bl-grey">
+                        <div class="grid-element tc" (click)="this.openAppointmentDetails(consultation)"
+                            [ngClass]="(consultation.consultationStatus === 'queued' ? 'waiting' : '') + ' ' + (consultation.consultationStatus === 'regreted' ? 'cancelled' : '')"
+                            *ngFor="let consultation of timeslot.consultations.slice(0, 3)">
+                            <p class="p-details"><span class="hide">
+                                {{ consultation.patient.name }}
+                            </span></p>
+                        </div>
+
+                        <div class="grid-element tc" *ngIf="timeslot.consultations.length > 3">
+                            +{{ timeslot.consultations.length - 3 }}
+                        </div>
+                    </div>
+            </div>
+
+
+        </div>
+        <!-- apointment -->
+        <div class="wid" *ngIf="showAppointmentDetails">
+            <div class="side-popup">
+                <h2 class="line">
+                    Appointment Details
+                    <button mat-icon-button aria-label="View consultation" color="primary"
+                        (click)="openConsultationInSoap(currentConsultation)"
+                    >
+                        <mat-icon>arrow_forward_ios</mat-icon>
+                    </button>
+                </h2>
+
+                <div class="patient-details-container">
+                    <p class="m-0 hightlight-on-hover" (click)="highlightThisPatientConsultations(currentConsultation)">{{ currentConsultation.patient.name }}<span class="details">
+                        ( {{ currentConsultation.patient.gender }} / {{ _util.getTimeDifferenceInYears(currentConsultation.patient.date_of_birth) }} years )</span></p>
+                    <p class="m-0">UID:  <span class="details">{{ _util.sentizeUniqueId(currentConsultation.user_login) }}</span></p>
+                    <p class="m-0 uid">Status:  <span class="details">{{ getStatusLabel(currentConsultation.consultationStatus) }}</span></p>
+
+                    <mat-chip-list aria-label="Patient Tags" class="patient-tags" matLine
+                        *ngIf="currentConsultation.payment_received || (currentConsultation.patient.meta.tags && currentConsultation.patient.meta.tags.length)"
+                    >
+                        <mat-chip style="background-color: teal; color: white;" *ngIf="currentConsultation.payment_received">
+                            Payment Received</mat-chip>
+                        <mat-chip *ngFor="let tag of currentConsultation.patient.meta.tags | keyvalue">{{ tag.value }}</mat-chip>
+                    </mat-chip-list>
+                </div>
+
+                <div class="action-container">
+                    <textarea name="" id="" cols="30" rows="4" class="notes"placeholder="Doctor notes ..." [(ngModel)]="reshedulingComment"></textarea>
+
+                    <input matInput [ngxMatDatetimePicker]="consultAgainDatePicker" placeholder="Choose a date"
+                        [hidden]="true"
+                        (dateChange)="resheduleConsult($event)">
+                  <ngx-mat-datetime-picker #consultAgainDatePicker
+                                           stepMinute="15"
+                                           touchUi="true"
+                                           showSpinners="true"
+                                           enableMeridian="true"
+                                           [startAt]="this._util.getScheduleCalendarDefaultStartAt()"
+                                           [hidden]="true"></ngx-mat-datetime-picker>
+
+                    <div class="buttons-container">
+                        <button mat-stroked-button color="primary" (click)="acceptConsultation()">Accept</button>
+                        <button mat-stroked-button (click)="consultAgainDatePicker.open()">Reschedule</button>
+                        <button mat-stroked-button color="warn" (click)="regretConsultation()" [hidden]="true">Regret</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

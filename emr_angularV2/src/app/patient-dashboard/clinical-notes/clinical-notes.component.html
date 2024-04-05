@@ -1,0 +1,80 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Examinations</strong></p>
+        <mat-icon (click)="deleteSection()" class="iconStyle_big a-icon"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+        >close</mat-icon>
+    </div>
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text a-clinical-note-input-field" style="height: 14px;" matInput placeholder="Inspections"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.inspection"/>
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text" style="height: 14px;" matInput placeholder="Palpation"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.palpation"/>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text" style="height: 14px;" matInput placeholder="Percussion"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.percussion"/>
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text" style="height: 14px;" matInput placeholder="Auscultation"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.quscultation"/>
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text" style="height: 14px;" matInput placeholder="System Wise Examination"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.system_wide_examination"/>
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                <input class="fullWidth editText complaint-text" style="height: 14px;" matInput placeholder="Key Observations"
+                       (blur)="updateValues()"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.clinical_notes.key_observation"/>
+            </mat-form-field>
+        </div>
+
+
+    </div>
+
+
+</div>

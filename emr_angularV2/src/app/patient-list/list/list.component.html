@@ -1,0 +1,69 @@
+<div style="overflow: auto; padding-bottom: 48px;">
+    <mat-list *ngIf="true">
+        <mat-list-item *ngFor="let consultation of patientList | search:searchTerm ;let position=index" class="showPointer">
+            <div fxLayout="row" fxLayoutAlign="center center"  matListAvatar style="border-radius: 60px;background: #80cbc4">
+
+
+                <img height="28" width="28" src="../../../assets/images/video_call.gif" *ngIf="consultation.showVideoCallIndicator; else first_name_char">
+
+            <ng-template #first_name_char>
+              <p *ngIf="!consultation.patient.profile_pic" class="custom-font-style font_patient_title " style="color:#ffffff !important">{{_util.getFirstCharOrName(consultation.patient.name)}}</p>
+              <img *ngIf="consultation.patient.profile_pic" height="40" width="40" style="border-radius: 50%" src="{{consultation.patient.profile_pic}}">
+            </ng-template>
+            </div>
+              <h4 matLine class="custom-font-style font_patient_title" (click)="redirectToDashboard(consultation,position)">
+                {{consultation.patient.name}}</h4>
+              <p matLine class="custom-font-style font_patient_infor" (click)="redirectToDashboard(consultation,position)">
+                {{_util.getTimeDifferenceInYears(consultation.patient.date_of_birth)}} Years Old |
+                {{consultation.patient.gender}} 
+                <span [hidden]="!consultation.soapDateGmt || (consultation.soapDateGmt === 'null')">
+                  @ {{ _util.niceDateFormat(consultation.soapDateGmt) }}</span>
+              </p>
+
+            <mat-chip-list aria-label="Patient Tags" class="patient-tags" matLine
+                           *ngIf="(consultation.patient.meta && consultation.patient.meta.tags) || consultation.payment_received">
+                <mat-chip style="background-color: teal; color: white;">Payment Received</mat-chip>
+                <mat-chip *ngFor="let tag of consultation.patient.meta.tags | keyvalue">{{ tag.value }}</mat-chip>
+            </mat-chip-list>
+
+
+            <mat-icon *ngIf="consultation['patient'].meta && consultation['patient'].meta.haveCard"
+                      style="margin-right: 10px; color: teal;"
+                      matTooltip="Patient have Health Card"
+            >card_membership</mat-icon>
+
+            <mat-chip-list fxShow="true" fxShow.xs="false"
+                          class="unique-id-popup"
+                           style="margin-right: 10px; min-width: max-content;">
+                <mat-chip style="min-width: max-content;">
+                    <p class="custom-font-style font_patient_infor unique-id-popup"> 
+                      Unique Id: {{_util.sentizeUniqueId(consultation.user_login) }}
+                    </p>
+                </mat-chip>
+
+            </mat-chip-list>
+            <mat-icon  style="margin-right: 10px;color:#009688 !important" [matMenuTriggerFor]="uniqueId"
+                      fxShow="false" fxShow.xs="true"
+            >info</mat-icon>
+            <mat-menu #uniqueId="matMenu">
+              <p class="custom-font-style font_patient_title" style="padding: 0; margin: 0 10px; ">
+                Unique Id:
+                <strong>{{_util.sentizeUniqueId(consultation.user_login) }}</strong></p>
+            </mat-menu>
+            <button mat-stroked-button color="primary" (click)="consultationDone(consultation, position, $event)"
+                    *ngIf="removing !== consultation.id">
+                <mat-icon class="teal-color" (click)="consultationDone(consultation, position, $event)">check</mat-icon>
+            </button>
+        </mat-list-item>
+    </mat-list>
+    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!(patientList | search:searchTerm).length && !isProcessing"
+        style="margin-top: 20px"
+    >
+
+      <img src="../../../assets/images/surgery-room.png" height="70" width="70"/>
+      <p class="custom-font-style font_patient_title">No Patient Found </p>
+        <button mat-stroked-button color="primary" (click)="newPatientWithSearchString(searchTerm)">Create New</button>
+    </div>
+
+
+</div>

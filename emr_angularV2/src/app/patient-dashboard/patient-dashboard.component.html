@@ -1,0 +1,63 @@
+<div class="container" fxLayout="column" style=" overflow: scroll;" id="patient-dashboard-container"
+     [hidden]="_util.header_settings.mobile_show_edit_patient && isEditPatientMobile"
+>
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="showProgressBar;else showSoap">
+        <mat-spinner diameter="30" strokeWidth="3" style="margin-top: 15px"></mat-spinner>
+    </div>
+
+
+    <ng-template #showSoap>
+        <p>
+            Appointment On: &nbsp;<strong>{{ _util.showDateLocally(_util.current_soap_model.created_at) }}</strong>, 
+            Booked On: &nbsp;<strong>{{ _util.showDateLocally(_util.current_soap_model.consultationTime) }}</strong>
+        </p>
+
+        <div *ngFor="let component of _util.component_mapingWithChips">
+            <app-chief-complaints *ngIf="component==='chief_complaints'" id="chief_complaints"></app-chief-complaints>
+            <app-examination *ngIf="component==='examinations'" id="examinations"></app-examination>
+            <app-vitals *ngIf="component==='vitals'" id="vitals"></app-vitals>
+            <app-clinical-notes *ngIf="component==='clinical_notes'" id="clinical_notes"></app-clinical-notes>
+            <app-diagnosis *ngIf="component==='diagnosis'" id="diagnosis"></app-diagnosis>
+            <app-medicine *ngIf="component==='medication'" id="medication"></app-medicine>
+            <app-investigation *ngIf="component==='investigation'" id="investigation"></app-investigation>
+            <app-referrals *ngIf="component==='referrals'" id="referrals"></app-referrals>
+            <app-procedures *ngIf="component==='procedures'" id="procedures"></app-procedures>
+            <app-results *ngIf="component==='results'" id="results"></app-results>
+            <app-attachments *ngIf="component==='attachments'" id="attachments"></app-attachments>
+            <app-remarks *ngIf="component==='remark-follow-up'" id="remark-follow-up"></app-remarks>
+            <app-personal-history *ngIf="component === 'personal_history'" id="personal_history"></app-personal-history>
+            <app-diet-chart *ngIf="component === 'diet_chart'" id="diet_chart"></app-diet-chart>
+        </div>
+
+
+        <mat-chip-list style="margin-top: 15px">
+            <div *ngFor="let chips of _util.soap_chips; let position = index">
+                <mat-chip [ngClass]="chips.isHighLighted?'next-focused-chips-background':'chips-background'"
+                          *ngIf="!chips.isUsed && !_util.previousSoapSettings.previousSoapActivated; else showOnlyTestResult"
+                          (click)="showComponenetBasedOnChips(position)">
+                    <p class="chips-fonts"> + {{chips.name}}</p>
+                </mat-chip>
+                <ng-template #showOnlyTestResult>
+                    <mat-chip [ngClass]="chips.isHighLighted?'next-focused-chips-background':'chips-background'"
+                              *ngIf="!chips.isUsed && (_util.previousSoapSettings.previousSoapActivated && chips.name==='Test Result')"
+                              (click)="showComponenetBasedOnChips(position)">
+                        <p class="chips-fonts"> + {{chips.name}}</p>
+                    </mat-chip>
+
+                </ng-template>
+            </div>
+        </mat-chip-list>
+
+        <mat-card *ngIf="_util.current_soap_model.feedbacks.length">
+            <mat-list>
+                <h3 mat-subheader>Patient Feedbacks</h3>
+                <mat-list-item *ngFor="let feedback of _util.current_soap_model.feedbacks">
+                    <mat-icon mat-list-icon>rate_review</mat-icon>
+                    <h4 mat-line>{{ feedback.value }} / 5: {{feedback.created_at | date}}</h4>
+                    <p mat-line> {{ feedback.body }} </p>
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+
+    </ng-template>
+</div>

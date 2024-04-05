@@ -1,0 +1,53 @@
+<p class="titleFont no-margin" style="display: flex; align-items: center;">
+    Here you can create multiple notes for patient, full text. <br>
+    System will remember it, so you don't need to.
+
+    <span style="flex: 1 auto;"></span>
+
+    <button mat-icon-button (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</p>
+
+<div fxLayout="column" style="margin-bottom: 20px; margin-top: 20px;">
+    <mat-form-field appearance="outline" fxFlex="1 auto" class="fullWidth">
+        <mat-label>Text for new note</mat-label>
+        <input matInput placeholder="Be as descriptive as possible" [(ngModel)]="text">
+        <mat-icon matSuffix>create</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="addNote()">
+        {{ noteId ? 'Update note' : 'Add new' }}
+    </button>
+</div>
+
+<mat-divider></mat-divider>
+
+<mat-nav-list class="remove-margin-padding">
+    <mat-list-item role="listitem" *ngFor="let note of notes"
+                   (click)="startEditing(note)"
+                   style="height: auto;"
+    >
+        <mat-icon matListIcon>note</mat-icon>
+
+        <h3 matLine> <strong>{{note.writer}} </strong></h3>
+        <p matLine style="text-overflow: clip; white-space: normal">
+            <span> {{note.text}} </span>
+        </p>
+
+        <p matLine>
+            <span> <small>{{ this._util.showDateLocally(note.created_at) }}</small> </span>
+        </p>
+
+        <mat-icon class="clickable"
+                  color="warn"
+                  (click)="deleteNote(note)"
+        >delete</mat-icon>
+
+        <hr>
+
+    </mat-list-item>
+
+</mat-nav-list>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>

@@ -1,0 +1,14 @@
+::ng-deep mat-select .mat-select-arrow {
+  opacity: 1;
+
+}
+
+.meal-fields-desktop {
+  margin-left: 25px;
+  margin-right: 25px
+}
+
+.meal-fields-mobile {
+  margin-left: 10px;
+  margin-right: 10px;
+}

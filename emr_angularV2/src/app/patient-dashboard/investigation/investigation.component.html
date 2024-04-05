@@ -1,0 +1,127 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="end center">
+        <p class="dashboard-title" style="margin-bottom: 5px; width: 100%"><strong>Investigations</strong></p>
+        <button mat-icon-button [hidden]="_util.current_soap_model.meta['staff-labs-order'] || showStaffMedsOrderLayout"
+                (click)="showStaffMedsOrderLayout = true" class="clickable"
+                style="margin-bottom: -24px; margin-right: 6px; color: #009688;"
+                matTooltip="Feed the lab order response">
+            <mat-icon style="margin-bottom: 12px;">
+                attach_money
+            </mat-icon>
+        </button>
+
+        <span class="kind-of-badge" *ngIf="_util.current_soap_model.meta['staff-labs-order']" style="margin-top: 14px;">
+              {{ _util.properStaffMedsStatus(_util.current_soap_model.meta['staff-labs-order']) }}
+          </span>
+
+        <mat-icon class="iconStyle_big a-icon" (click)="deleteSection()"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+            close
+        </mat-icon>
+    </div>
+
+    <div fxLayout="column" *ngIf="showStaffMedsOrderLayout">
+        <p style="margin-bottom: 0">How is the lab order received by patient.
+            <br>
+            <small>Do not fill this until you have full confirmation</small>
+            <br>
+        </p>
+        <ul style="margin-top: 0; margin-bottom: 0">
+            <li><strong>Delivered</strong>: Lab sample is collected and paid to by MediMetry team.</li>
+            <li><strong>Market</strong>: Patient did the tests from Market on his/her own.</li>
+            <li><strong>Refused</strong>: Patient completely refused for any test from anywhere.</li>
+        </ul>
+
+        <mat-progress-bar mode="indeterminate" *ngIf="showStaffMedsOrderLoading"></mat-progress-bar>
+
+        <div fxLayout="row" [hidden]="showStaffMedsOrderLoading">
+            <button style="margin: 10px;" mat-raised-button color="primary"
+                    (click)="_util.sendStaffPMSStat('staff-labs-delivered')">Delivered
+            </button>
+            <button style="margin: 10px;" mat-raised-button (click)="_util.sendStaffPMSStat('staff-labs-from-market')">
+                From Market
+            </button>
+            <button style="margin: 10px;" mat-raised-button color="warn"
+                    (click)="_util.sendStaffPMSStat('staff-labs-refused')">Refused
+            </button>
+        </div>
+
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="column"
+             *ngFor="let investigation of _util.current_soap_model.investigation; let position = index"
+             class="fullWidth">
+            <mat-chip-list *ngIf="investigation.showChips">
+                <mat-chip *ngFor="let chip of investigationChipsSuggestion"
+                          (click)="selectSuggestion(chip,position,null,true)"><p class="complaint-text">
+                    {{chip.name}}</p></mat-chip>
+            </mat-chip-list>
+
+            <div fxLayout="row" class="fullWidth">
+                <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong> - </strong></p>
+                <div fxLayout="column" fxFlex="90" class="remove-margin-padding">
+                    <mat-form-field fxFlexAlign="start center" style="margin-top: 10px">
+                        <input type="text" class="complaint-text a-investigation-input-field" aria-label="Number"
+                               matInput
+                               [matAutocomplete]="auto" (keyup.enter)="addNewRow(false,position,false)"
+                               [(ngModel)]="investigation.term_text"
+                               (keyup)="investigation.processed=false"
+                               [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                               id="inves_{{position}}"
+                               style="height: 14px;"
+                               (input)="showTermsSuggestions(investigation.term_text,position);investigation.isTyping=true"/>
+                        <mat-placeholder class="placeholder">Add Investigations</mat-placeholder>
+
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let investigation_suggestion of investigationDropDown"
+                                        [value]="investigation_suggestion.description"
+                                        (onSelectionChange)="selectSuggestionForInvestigation(investigation_suggestion,position)">
+                                <p class="complaint-text">{{investigation_suggestion.description}}</p>
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                        <mat-checkbox [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                                      (change)="setTypeOfInvestigation('radiology',position,$event)"
+                                      [checked]="investigation.type_radio"><p class="complaint-text">Radiology</p>
+                        </mat-checkbox>
+                        <mat-checkbox [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                                      (change)="setTypeOfInvestigation('pathology',position,$event)"
+                                      [checked]="investigation.type_patho"><p class="complaint-text">Pathology</p>
+                        </mat-checkbox>
+                        <mat-icon class="a-icon" (click)="addNewRow(false,position,false,$event)"
+                                  *ngIf="!investigation.processed && !_util.previousSoapSettings.previousSoapActivated">
+                            add
+                        </mat-icon>
+                        <mat-icon class="a-icon" (click)="addNewRow(false,position,false,$event)"
+                                  *ngIf="investigation.processed && !_util.previousSoapSettings.previousSoapActivated">
+                            check
+                        </mat-icon>
+
+
+                    </div>
+                </div>
+
+                <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                             *ngIf="investigation.showProgressBar"></mat-spinner>
+
+                <div fxLayout="row"
+                     *ngIf="investigation.processed && !_util.previousSoapSettings.previousSoapActivated;"
+                     fxLayoutAlign="center center">
+                    <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+                </div>
+            </div>
+            <!--<div fxLayout="row" fxLayoutAlign="center center" *ngIf="_util.previousSoapSettings.previousSoapActivated">-->
+            <!--<mat-checkbox></mat-checkbox>-->
+            <!--</div>-->
+        </div>
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,135 @@
+<div fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <p class="custom-font-style"><strong>Preview Encounter</strong></p>
+    <div fxLayout="row" fxLayoutGap="15px">
+      <mat-icon (click)="closeDialog()">close</mat-icon>
+      <mat-icon>done</mat-icon>
+    </div>
+  </div>
+
+  <mat-vertical-stepper #linearVerticalStepper="matVerticalStepper">
+
+    <div *ngFor="let item of _util.current_soap_model | keyvalue">
+      <mat-step *ngIf="item.key==='chief_complaints' && item.value.length > 0">
+        <ng-template matStepLabel style="width: 100% !important;">
+          <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+            <strong class="complaint-text">Chief Complaint</strong>
+            <mat-icon>edit</mat-icon>
+          </div>
+        </ng-template>
+        <div fxLayout="row" *ngFor="let cmp of _util.current_soap_model.chief_complaints">
+            <p class="complaint-text" *ngIf="cmp.type==='text'; else cmpImage">- {{cmp.complaint}}</p>
+
+        </div>
+
+
+
+        <!--<p class="complaint-text"-->
+           <!--*ngFor="let cmp of _util.current_soap_model.chief_complaints">-->
+         <!-- - {{cmp.type==='image'}}</p>-->
+      </mat-step>
+      <mat-step *ngIf="item.key==='examinations' && item.value.length > 0">
+        <ng-template matStepLabel><strong class="complaint-text">Examinations</strong></ng-template>
+        <p class="complaint-text"
+           *ngFor="let exm of _util.current_soap_model.examinations">
+          - {{exm.remarks}}</p>
+      </mat-step>
+      <mat-step *ngIf="item.key==='diagnosis' && item.value.length > 0">
+        <ng-template matStepLabel><strong class="complaint-text">Diagnosis</strong></ng-template>
+        <p class="complaint-text"
+           *ngFor="let exm of _util.current_soap_model.diagnosis">
+          - {{exm.diagnosis}}</p>
+
+      </mat-step>
+      <mat-step *ngIf="item.key==='medication' && item.value.length > 0">
+        <ng-template matStepLabel><strong class="complaint-text">Medicines</strong></ng-template>
+        <p class="complaint-text"
+           *ngFor="let med of _util.current_soap_model.medication">
+          - {{med.drug_name}} ({{med.drug_dosage}} {{med.drug_dosage_unit}}) </p>
+      </mat-step>
+      <mat-step *ngIf="item.key==='investigation' && item.value.length > 0">
+        <ng-template matStepLabel><strong>Investigations</strong></ng-template>
+
+      </mat-step>
+      <mat-step *ngIf="item.key==='referrals' && item.value.length > 0">
+        <ng-template matStepLabel><strong class="complaint-text">Referrals</strong></ng-template>
+
+      </mat-step>
+      <mat-step *ngIf="item.key==='procedures' && item.value.length > 0">
+        <ng-template matStepLabel><strong>Procedures</strong></ng-template>
+
+      </mat-step>
+      <mat-step *ngIf="item.key==='results' && item.value.length > 0">
+        <ng-template matStepLabel><strong>Results</strong></ng-template>
+
+      </mat-step>
+      <!--<mat-step *ngIf="item.key==='attachments' && item.value.length > 0">-->
+      <!--<ng-template matStepLabel ><strong>Attachments</strong></ng-template>-->
+
+      <!--</mat-step>-->
+
+    </div>
+
+  </mat-vertical-stepper>
+
+  <!--Chief Complaints -->
+  <!--<div fxLayout="column" *ngIf="item.key==='chief_complaints' && item.value.length > 0" >-->
+  <!--<p class="custom-font-style"><strong>Chief Complaints</strong></p>-->
+  <!--<mat-card>-->
+  <!--<mat-card-content >-->
+  <!--<mat-list role="list">-->
+  <!--<mat-list-item role="listitem" *ngFor="let cp of ['Having Nose Issue','Having Skin Itching','Joint Pain']"><strong>- {{cp}}</strong></mat-list-item>-->
+  <!--</mat-list>-->
+  <!--</mat-card-content>-->
+  <!--</mat-card>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;Examinations&ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='examinations' && item.value.length > 0">-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Vitals&ndash;&gt;-->
+  <!--&lt;!&ndash;Clinical Notes &ndash;&gt;-->
+  <!--&lt;!&ndash;Diagnosis &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='diagnosis' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Medicines  &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='medication' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Investigations &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='investigation' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Referrals &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.keyreferralsrral' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Procedures  &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='procedures' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Results  &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='results' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+  <!--&lt;!&ndash;Attachments  &ndash;&gt;-->
+  <!--<div fxLayout="column" *ngIf="item.key==='attachments' && item.value.length > 0">-->
+  <!--<p>{{item.key}}</p>-->
+
+  <!--</div>-->
+
+
+</div>

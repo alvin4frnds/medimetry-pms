@@ -1,0 +1,18 @@
+.mat-ink-bar{
+  background-color:#80cbc4 !important;
+
+    max-width: 50%;
+}
+
+.mat-stretched-tabs {
+    width: 100%;
+    max-width: 100%;
+}
+
+::ng-deep.mat-tab-label {
+    width: 50%;
+}
+
+::ng-deep.mat-ink-bar {
+    max-width: 50%;
+}

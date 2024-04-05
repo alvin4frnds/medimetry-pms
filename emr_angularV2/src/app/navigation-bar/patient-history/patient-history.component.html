@@ -1,0 +1,228 @@
+<mat-vertical-stepper #linearVerticalStepper="matVerticalStepper" >
+
+  <!-- <ng-template matStepperIcon="edit">
+    <mat-icon>done</mat-icon>
+  </ng-template> -->
+
+
+
+  <mat-step [completed]="false">
+      <ng-template matStepLabel style="width: 100% !important;">
+        <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+          <strong class="complaint-text">Past Medications</strong>
+        </div>
+      </ng-template>
+      <mat-form-field>
+        <input class="complaint-text" matInput
+        placeholder="Add Medicine"
+        style="font-size: 11px"
+        autocomplete="off"
+        [(ngModel)]="var_past_medication_remarks"
+        (keyup.enter)="addHistoryObject('past-medication',$event,_util.patientHistoryObject.past_medication_2,true,false)"
+        (blur)="addHistoryObject('past-medication',$event,_util.patientHistoryObject.past_medication_2,true,false)"
+        />
+      </mat-form-field>
+
+      <div *ngFor="let medicine of _util.patientHistoryObject.past_medication_2; let position=index" fxLayout="row" fxLayoutAlign="start center">
+
+        <mat-card class="fullWidth" style="margin-top: 5px;">
+            <mat-card-content fxLayout="row" fxLayout="start center" (click)="updatePastMedicine(medicine.remark,position,medicine.id)">
+                <p fxFlex="90" class="complaint-text" style="font-size: 12px" >{{medicine.remark}}</p>
+                <mat-icon fxFlex="10" class="iconStyle_big" (click)="deleteHistory(medicine.id,'past-medication',position,_util.patientHistoryObject.past_medication_2,$event)">remove</mat-icon>
+
+            </mat-card-content>
+        </mat-card>
+      </div>
+
+
+    </mat-step>
+
+  <mat-step [completed]="false">
+    <ng-template matStepLabel style="width: 100% !important;">
+      <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+        <strong class="complaint-text">Allergies</strong>
+      </div>
+    </ng-template>
+
+    <!-- <mat-form-field>
+      <input class="complaint-text" matInput placeholder="Add Allergy" style="font-size: 11px"
+             (keyup.enter)="addHistoryObject('allergy',$event,_util.patientHistoryObject.allergies)"/>
+    </mat-form-field> -->
+
+
+
+<!-- MatChips List -->
+
+<div fxLayout="column">
+  <mat-form-field class="inputBoxBorder fullWidth">
+  <mat-chip-list #chipList>
+    <mat-chip
+      *ngFor="let fruit of suggestions"
+      [selectable]="true"
+      [removable]="true"
+      (removed)="remove(fruit)">
+      {{fruit}}
+      <mat-icon matChipRemove *ngIf="true">clear</mat-icon>
+    </mat-chip>
+    <input
+      placeholder="Allergy Substance"
+      #alleryInput
+      (input)="getSuggestionFromServer($event)"
+      [formControl]="allergyFormControl"
+      [matAutocomplete]="allergiesSuggestion"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="true"
+      (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #allergiesSuggestion="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let suggestion of allergySuggestion">
+      {{suggestion}}
+    </mat-option>
+    </mat-autocomplete></mat-form-field>
+    <mat-form-field class="inputBoxBorder fullWidth" style="margin-top: 7px">
+      <input class="complaint-text"
+      autocomplete="off"
+      (blur)="saveAllergy()"
+      (keyup.enter)="saveAllergy()"
+      matInput placeholder="Allergic Reaction" style="font-size: 11px"
+            [(ngModel)]="var_temp_remarks"/>
+  </mat-form-field>
+
+  <div fxLayout="row" class="fullWidth" fxLayoutAlign="end end" style="margin-top: 10px;">
+    <!-- <button mat-raised-button style="background: #009688;color: white"  (click)='saveAllergy()'>Save</button> -->
+  </div>
+
+  </div>
+
+<!-- MatChips List End  -->
+    <div *ngFor="let allergy of _util.patientHistoryObject.allergies; let position=index" fxLayout="row" fxLayoutAlign="start center">
+
+    <mat-card style='margin-top:4px;' class="fullWidth">
+      <mat-card-content fxLayout='row'fxLayoutAlign='start center' (click)="updateCurrentAllergy(allergy,position)">
+          <div fxLayout="column wrap" fxFlex="90">
+              <p class="complaint-text remove-margin-padding" style="word-break: break-all;white-space: normal;display:inline"  style="font-size: 12px" ><strong>Substance : </strong><br>{{allergy.substances}}</p>
+            <p class="complaint-text remove-margin-padding" style="word-break: break-all;white-space: normal;"  style="font-size: 12px" ><strong>Reaction</strong><br>{{allergy.reactions}}</p>
+            </div>
+            <div fxFlex="10">
+              <mat-icon class="iconStyle_big" (click)="deleteHistory(allergy.id,'allergy',position,_util.patientHistoryObject.allergies,$event)">clear</mat-icon>
+            </div>
+      </mat-card-content>
+    </mat-card>
+
+</div>
+  </mat-step>
+
+
+  <mat-step [completed]="false">
+    <ng-template matStepLabel style="width: 100% !important;">
+      <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+        <strong class="complaint-text">Family History</strong>
+      </div>
+    </ng-template>
+
+    <div fxLayout="column" class="fullWidth">
+    <mat-form-field class="inputBoxBorder fullWidth">
+        <mat-select placeholder="Select Relation" [(ngModel)]="var_family_relation">
+          <mat-option *ngFor="let relation of ['Father','Mother','Grandfather','GrandMother','Brother','Sister','Uncle','Aunt','Cousin','Husband','Wife','Son','Daughter'] " [value]="relation">
+            <p class="complaint-text">{{relation}}</p>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    <mat-form-field class="inputBoxBorder fullWidth" style="margin-top: 5px;">
+      <input [(ngModel)]="var_family_remark" class="complaint-text"
+      autocomplete="off"
+      (blur)="processCurrentPastRelation()"
+      (keyup.enter)="processCurrentPastRelation()"
+      matInput placeholder="Add History" style="font-size: 11px"
+            />
+    </mat-form-field>
+
+  <!-- <div fxLayout="row" class="fullWidth" fxLayoutAlign="end end" style="margin-top: 10px;">
+      <button mat-raised-button style="background: #009688;color: white"  (click)="processCurrentPastRelation()">Save</button>
+    </div> -->
+
+  </div>
+
+
+    <div *ngFor="let fam of _util.patientHistoryObject.familyHistory; let position=index" fxLayout="row" fxLayoutAlign="start center">
+
+
+      <mat-card style='margin-top:4px;' class="fullWidth">
+        <mat-card-content fxLayout='row'fxLayoutAlign='center start'>
+          <div fxLayout="column" fxFlex="95">
+            <p class="remove-margin-padding complaint-text"> <strong>{{fam.relation}}</strong></p>
+            <p  class="remove-margin-padding complaint-text" style="font-size: 12px" >{{fam.remark}}</p>
+          </div>
+          <div fxLayout="row" fxFlex="5" fxLayoutAlign="center center">
+              <mat-icon class="iconStyle_big" (click)="deleteHistory(fam.id,'family_history',position,_util.patientHistoryObject.familyHistory)">remove</mat-icon>
+          </div>
+          </mat-card-content>
+      </mat-card>
+        </div>
+
+  </mat-step>
+
+
+  <mat-step [completed]="false">
+    <ng-template matStepLabel style="width: 100% !important;">
+      <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+        <strong class="complaint-text">Past Illness</strong>
+      </div>
+    </ng-template>
+    <mat-form-field>
+      <input class="complaint-text"
+      autocomplete="off"
+      matInput placeholder="Add Illness" style="font-size: 11px" [(ngModel)]='var_past_illness_remark'
+             (keyup.enter)="addHistoryObject('past-illness',$event,_util.patientHistoryObject.past_illness_2,false,true)"
+             (blur)="addHistoryObject('past-illness',$event,_util.patientHistoryObject.past_illness_2,false,true)"
+             />
+    </mat-form-field>
+
+    <div *ngFor="let illness of _util.patientHistoryObject.past_illness_2; let position=index" fxLayout="row" fxLayoutAlign="start center" style="margin-top:5px">
+      <mat-card class="fullWidth" style="margin-top: 5px;">
+        <mat-card-content fxLayout="row" fxLayout="start center" (click)="updatePastIllness(illness.remark,position,illness.id)">
+          <p  fxFlex="95" class="complaint-text" style="font-size: 12px" >{{illness.remark}}</p>
+          <mat-icon fxFlex="5" class="iconStyle_big" (click)="deleteHistory(illness.id,'past-illness',position,_util.patientHistoryObject.past_illness_2,$event)">remove</mat-icon>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+
+
+  </mat-step>
+
+  <mat-step [completed]="false">
+    <ng-template matStepLabel style="width: 100% !important;">
+      <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-between center">
+        <strong class="complaint-text">Past Procedures</strong>
+      </div>
+    </ng-template>
+    <mat-form-field>
+      <input class="complaint-text"
+      autocomplete="off"
+      matInput placeholder="Add Treatment" [(ngModel)]="var_past_treatment_remarks" style="font-size: 11px"
+             (keyup.enter)="addHistoryObject('past-treatment',$event,_util.patientHistoryObject.past_treatment)"
+             (blur)="addHistoryObject('past-treatment',$event,_util.patientHistoryObject.past_treatment)"
+             />
+    </mat-form-field>
+
+
+    <div *ngFor="let treatment of _util.patientHistoryObject.past_treatment; let position=index" fxLayout="row" fxLayoutAlign="start center">
+        <mat-card class="fullWidth" style="margin-top: 5px;">
+            <mat-card-content fxLayout="row" fxLayout="start center" (click)="updatePastTreatment(treatment.remarks,position,treatment.id)">
+                <p fxFlex="90"  class="complaint-text" style="font-size: 12px" >{{treatment.term_text}}</p>
+                <mat-icon fxFlex="10" class="iconStyle_big" (click)="deleteHistory(treatment.id,'procedure',position,_util.patientHistoryObject.past_treatment,$event)">remove</mat-icon>
+              </mat-card-content>
+        </mat-card>
+
+    </div>
+
+  </mat-step>
+
+
+
+
+</mat-vertical-stepper>

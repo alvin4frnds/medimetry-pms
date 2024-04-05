@@ -1,0 +1,74 @@
+<div fxLayout="column" style="background: #ffffff;"
+     *ngIf="!_util.header_settings.show_patient_history_panel && !_util.header_settings.patient_previous_visit_layout && !_util.header_settings.mobile_show_edit_patient">
+
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+    <div fxLayout="row" fxLayoutAlign="space-between" style="padding: 16px;">
+        <div fxLayoutAlign="start center">
+            <mat-form-field id="notification-filter-field">
+                <mat-label>{{ selectedNotification.name }}</mat-label>
+                <mat-select [(ngModel)]="selectedNotification.type">
+                    <mat-option *ngFor=" let type of notificationTypes"
+                                (click)="filterNotifications(type.value, type.name)">{{type.name}}
+                        <i class="material-icons on-the-right" [ngClass]="{'green': type.isIncomming, 'blue': !type.isIncomming}">
+                            {{ type.isIncomming ? 'call_received' : 'call_made' }}</i>
+                    </mat-option>
+                </mat-select>
+
+            </mat-form-field>
+            <i class="material-icons" [hidden]="selectedNotification.type == ''"
+               style="cursor: pointer; margin-left: 5px; " (click)="filterNotifications()">
+                clear
+            </i>
+        </div>
+
+        <button mat-stroked-button (click)="markAllDone()">
+            Clear All
+        </button>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!notifications.length">
+        <img src="../../assets/images/not.png"/>
+        <p class="complaint-text">No Notifications Found</p>
+    </div>
+
+    <mat-list class="notifications"
+              style="margin-top: 0; padding-top: 0;"
+              infiniteScroll
+              [infiniteScrollDistance]="0.5"
+              [infiniteScrollThrottle]="1000"
+              (scrolled)="onScrollMore()"
+              [scrollWindow]="false"
+    >
+        <mat-list-item *ngFor="let notification of notifications" class="notification"
+                       (click)="openNotification(notification)"
+                       [ngClass]="{'read': notification.read, 'unread': !notification.read && notification.mine}"
+                       fxLayout="column" fxLayoutAlign="start">
+            <h4 mat-line class="toolbar-header-text custom-font-style">{{ notification.title }}</h4>
+            <p fxLayout="row" fxLayoutAlign="end" mat-line>
+                <span class="custom-font-style">
+                    {{ notification.description }} <br>
+                  {{ this._util.showDateLocally(notification.date) }}
+                </span>
+
+                <span class="receiver-notification-status"
+                      *ngIf="!notification.mine && notification.read"
+                >
+                  <mat-icon>done_all</mat-icon> read
+                </span>
+                <span class="receiver-notification-status"
+                      *ngIf="!notification.mine && !notification.read">
+                  <mat-icon>done</mat-icon>
+                  delivered
+                </span>
+
+                <button mat-icon-button (click)="markDone(notification)"
+                        style="opacity: 1"
+                        appClickStopPropagation>
+                    <mat-icon aria-label="remove this notification from listing">close</mat-icon>
+                </button>
+            </p>
+        </mat-list-item>
+    </mat-list>
+
+</div>

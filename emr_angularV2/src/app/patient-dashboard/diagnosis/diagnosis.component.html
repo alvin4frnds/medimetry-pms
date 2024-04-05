@@ -1,0 +1,82 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;" fxFlex="1 1 auto"><strong>Diagnosis</strong></p>
+
+        <mat-slide-toggle
+                style="margin-bottom: -12px; margin-right: 20px;"
+                [(ngModel)]="showDropDownSuggestions"
+                title="show standards dropdown too">
+            <span class="standard-toggle">use standard</span>
+        </mat-slide-toggle>
+        <mat-icon [hidden]="hideCrossButton" (click)="deleteSection()" *ngIf="!_util.previousSoapSettings.previousSoapActivated"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  class="iconStyle_big a-icon">
+            close
+        </mat-icon>
+        <mat-slide-toggle *ngIf="showLockUnlockEditingToggle"
+                          (change)="toggleDiagnosisLock()"
+                          [(ngModel)]="!_util.previousSoapSettings.previousSoapActivated"
+        >
+          Editing {{ _util.previousSoapSettings.previousSoapActivated ? 'Not' : '' }} Allowed
+        </mat-slide-toggle>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="column" *ngFor="let diagnosis of _util.current_soap_model.diagnosis; let position = index"
+             class="fullWidth"
+             fxFlexAlign="center center">
+            <mat-chip-list *ngIf="diagnosis.showChips">
+                <mat-chip *ngFor="let chip of diagnosisChipsSuggestion"
+                          (click)="selectSuggestion(chip,position,$event,true)"><p
+                        class="complaint-text">{{chip.name}}</p></mat-chip>
+            </mat-chip-list>
+
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong> - </strong></p>
+                <mat-form-field fxFlex="90" fxFlexAlign="start center">
+                    <input type="text" class="dashboard-edittext-font complaint-text a-diagnosis-input-field"
+                           id="diag_{{position}}"
+                           aria-label="Number" matInput
+                           [matAutocomplete]="diagnosis_auto"
+                           (keyup.enter)="sendFocusToNextElement(position)"
+                           (keyup)="addNextRow()"
+                           (blur)="addNewRow(false,position,false)"
+                           [(ngModel)]="diagnosis.diagnosis"
+                           style="height: 14px;"
+                           (input)="showTermsSuggestions(diagnosis.diagnosis,position)"
+                           [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                    />
+                    <mat-placeholder class="placeholder">Add Diagnosis</mat-placeholder>
+                    <mat-autocomplete #diagnosis_auto="matAutocomplete" [hidden]="!showDropDownSuggestions">
+                        <mat-option *ngFor="let suggestion of diagnosisDropDownSuggestion"
+                                    [value]="suggestion.icd10_description"
+                                    (onSelectionChange)="selectSuggestion(suggestion,position,$event,false)"
+                        >
+                            <p class="complaint-text">{{suggestion.icd10_description}}</p>
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                             *ngIf="diagnosis.showProgressBar"></mat-spinner>
+                <div fxLayout="row"
+                     *ngIf="diagnosis.processed && !_util.previousSoapSettings.previousSoapActivated"
+                     fxLayoutAlign="center center">
+                    <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+                </div>
+                <div fxLayout="row"
+                     *ngIf="!(diagnosis.processed && !_util.previousSoapSettings.previousSoapActivated)"
+                     fxLayoutAlign="center center">
+                    <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)" style="color: white;">
+                        close
+                    </mat-icon>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>

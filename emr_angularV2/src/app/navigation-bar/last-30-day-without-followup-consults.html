@@ -1,0 +1,112 @@
+<p class="titleFont no-margin" style="display: flex; align-items: center;" id="last-30-day-without-followup-consults">
+    <span style="flex: 1 auto;"></span>
+
+    <mat-form-field [formControl]="centersFormControl" *ngIf="false">
+      <mat-label>Centers</mat-label>
+      <mat-select multiple>
+        <mat-option *ngFor="let center of centersList" [value]="center.code"
+            >{{center.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Priority</mat-label>
+      <mat-select required (selectionChange)="priorityChanged()" [(ngModel)]="model.priority">
+        <mat-option value="">All</mat-option>
+        <mat-option value="Green">Green</mat-option>
+        <mat-option value="Yellow">Yellow</mat-option>
+        <mat-option value="Red">Red</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Followup</mat-label>
+      <mat-select required (selectionChange)="followupChanged()" [(ngModel)]="model.followup">
+        <mat-option value="today">Pending Followups</mat-option>
+        <mat-option value="without">Without Followups</mat-option>
+        <mat-option value="done">Done Followups</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-icon-button (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</p>
+
+<h2 *ngIf="! consultations.length">
+  No Followups found for above criteria.
+</h2>
+
+<mat-list infiniteScroll
+          [infiniteScrollDistance]="0.5"
+          [infiniteScrollThrottle]="500"
+          (scrolled)="onScrollMore()"
+          [scrollWindow]="false"
+          style="overflow-y: scroll; height: calc(90vh - 76px); padding-top: 0 !important;"
+>
+    <mat-list-item *ngFor="let consultation of consultations;let position=index" class="showPointer">
+        <h4 matLine class="custom-font-style font_patient_title"
+            (click)="redirectToDashboard(consultation,position)">
+            {{consultation.patient.name}} 
+            &nbsp;<small>( {{ consultation.centerName }} )</small>
+        </h4>
+        <p matLine class="custom-font-style font_patient_infor"
+            (click)="redirectToDashboard(consultation,position)">
+            {{_util.getTimeDifferenceInYears(consultation.patient.date_of_birth)}} Years Old |
+            {{consultation.patient.gender}} @ {{ consultation.soapDateHuman }}</p>
+
+        <p matLine class="custom-font-style font_patient_infor"
+            *ngIf="!!consultation.notification"
+            matTooltip="{{ consultation.notification.title }}"
+            (click)="redirectToDashboard(consultation,position)">
+            <strong> {{ _util.niceDateFormat(consultation.notification.date) }} </strong>&nbsp;:&nbsp;
+            {{ consultation.notification.title }}
+        </p>
+
+        <mat-chip-list aria-label="Patient Tags" class="patient-tags" matLine
+                       *ngIf="consultation.patient.meta && consultation.patient.meta.tags">
+            <mat-chip *ngFor="let tag of consultation.patient.meta.tags | keyvalue">{{ tag.value }}</mat-chip>
+        </mat-chip-list>
+
+        <mat-icon *ngIf="consultation['patient'].meta && consultation['patient'].meta.haveCard"
+                  style="margin-right: 10px; color: teal;"
+                  matTooltip="Patient have Health Card"
+        >card_membership
+        </mat-icon>
+
+        <mat-chip-list fxShow="true" fxShow.xs="false"
+                       style="margin-right: 10px; min-width: max-content;">
+            <mat-chip style="min-width: max-content;">
+                <p class="custom-font-style font_patient_infor" style="color: black !important">Unique Id:
+                    {{_util.sentizeUniqueId(consultation.user_login) }}</p>
+            </mat-chip>
+        </mat-chip-list>
+        <mat-icon style="margin-right: 10px;color:#009688 !important" [matMenuTriggerFor]="uniqueId"
+                  fxShow="false" fxShow.xs="true"
+        >info
+        </mat-icon>
+        <mat-menu #uniqueId="matMenu">
+            <p class="custom-font-style font_patient_title" style="padding: 5px">Unique Id:
+                <strong>{{_util.sentizeUniqueId(consultation.user_login) }}</strong></p>
+        </mat-menu>
+        <button mat-icon-button color="primary" (click)="addEmptyFUP(consultation)"
+                matTooltip="Add '0 Day(s)' follow to silence this consultation"
+                *ngIf="model.followup === 'without'"
+                [hidden]="consultation['addedEmptyFUP']">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="markNotificationDone(consultation)"
+                matTooltip="Mark the notification DONE. ( red X button in notifications )"
+                *ngIf="model.followup === 'today'"
+                [hidden]="consultation['notification']['done']">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="removeThisSoap(consultation)"
+                matTooltip="Remove this soap from PMS listing and search"
+                [hidden]="true || consultation['removedThisSoap']">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list>
+
+<mat-progress-bar mode="indeterminate" [hidden]="!loading"></mat-progress-bar>

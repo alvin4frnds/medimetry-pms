@@ -1,0 +1,111 @@
+/* You can add global styles to this file, and also import other style files */
+
+@media (min-width: 1281px) {
+  .chips-fonts {
+    color: white;
+    font-size: 12px;
+    font-family: Poppins;
+    font-weight: 500;
+  }
+
+  .chips-background {
+    background: #009688;
+  }
+
+  .next-focused-chips-background {
+    background:#ff5722;
+  }
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .chips-fonts {
+    color: white;
+    font-size: 12px;
+    font-family: Poppins;
+    font-weight: 500;
+  }
+
+  .chips-background {
+    background: #009688;
+  }
+  .next-focused-chips-background {
+    background: #ff5722
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .chips-fonts {
+    color: white;
+    font-size: 11px;
+    font-family: Poppins;
+    font-weight: 500;
+  }
+
+  .chips-background {
+    background: #009688;
+  }
+  .next-focused-chips-background {
+    background: #ff5722;
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .chips-fonts {
+    color: white;
+    font-size: 11px;
+    font-family: Poppins;
+    font-weight: 500;
+  }
+
+  .chips-background {
+    background: #009688;
+  }
+  .next-focused-chips-background {
+    background: #ff5722;
+  }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .chips-fonts {
+    color: white;
+    font-size: 11px;
+    font-family: Poppins;
+    font-weight: 500;
+  }
+
+  .chips-background {
+    background: #009688;
+  }
+  .next-focused-chips-background {
+    background: #ff5722;
+  }
+}
+
+[hidden] {
+    display: none !important;
+}

@@ -1,0 +1,41 @@
+<div class="container" fxLayout="column">
+
+
+
+    <mat-tab-group #tabGroups [selectedIndex]="0">
+        <mat-tab label="Open">
+            <div style="height: calc(100vh - 64px); overflow-y: scroll"
+                 infiniteScroll
+                 [infiniteScrollDistance]="0.5"
+                 [infiniteScrollThrottle]="500"
+                 (scrolled)="onScrollMore()"
+                 [scrollWindow]="false">
+
+                <app-list [patientList]="server_response.open" [isProcessing]="showProgressBar" [selectedIndex]="0"
+                ></app-list>
+                <div fxLayout="row" class="fullWidth" *ngIf="showProgressBar" fxLayoutAlign="center center">
+                    <mat-spinner diameter="30" strokeWidth="3" style="margin-top: 15px"></mat-spinner>
+                </div>
+
+            </div>
+
+        </mat-tab>
+        <mat-tab label="Done">
+            <div style="height: calc(100vh - 64px); overflow-y: scroll"
+                 infiniteScroll
+                 [infiniteScrollDistance]="0.5"
+                 [infiniteScrollThrottle]="500"
+                 (scrolled)="onScrollMore()"
+                 [scrollWindow]="false"
+            >
+                <app-list [patientList]="server_response.done" [selectedIndex]="1"
+                [isProcessing]="showProgressBar"
+                ></app-list>
+                <div fxLayout="row" class="fullWidth" *ngIf="showProgressBar" fxLayoutAlign="center center">
+                    <mat-spinner diameter="30" strokeWidth="3" style="margin-top: 15px"></mat-spinner>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>

@@ -1,0 +1,59 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong><strong>Procedures</strong></strong></p>
+        <mat-icon class="iconStyle_big a-icon" (click)="deleteSection()"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  *ngIf="!_util.previousSoapSettings.previousSoapActivated">close
+        </mat-icon>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder"  style="padding-right: 5px;">
+
+        <div fxLayout="row" *ngFor="let procedure of _util.current_soap_model.procedures; let position = index"
+             class="fullWidth"
+             fxLayoutAlign="center center">
+
+            <p class="dashboard-title primary_color" fxFlex="5"  style="margin: 10px 0;"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center">
+                <input type="text" class="complaint-text a-procedure-input-field"  id="proc_{{position}}"
+                       aria-label="Number" matInput
+                       style="height: 14px;"
+                       (blur)="addNewRow(false,position,false)"
+            (keyup)="addNextRow()"
+            (keyup.enter)="sendFocusToNextElement(position)"
+                       (input)="showTermsSuggestions(procedure.term_text,position)"
+                       [(ngModel)]="procedure.term_text"
+                       [matAutocomplete]="c_procedures"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"/>
+
+                       <mat-placeholder class="placeholder">Add Procedures</mat-placeholder>
+                <mat-autocomplete #c_procedures="matAutocomplete" class="keyboard_open">
+                    <div *ngIf="procedure.showSuggestion">
+                        <mat-option *ngFor="let suggestion of procedureSuggestion | search : procedure.term_text"
+                                    [value]="suggestion.term_body"
+                                    (onSelectionChange)="selectSuggestion(suggestion,position,$event)">
+                            <p class="complaint-text custom-font-style">{{suggestion.term_body}}</p>
+                        </mat-option>
+                    </div>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                         *ngIf="procedure.showProgressBar"></mat-spinner>
+            <div fxLayout="row" *ngIf="procedure.processed && !_util.previousSoapSettings.previousSoapActivated"
+                 fxLayoutAlign="center center">
+                <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+            </div>
+            <div fxLayout="row" *ngIf="!(procedure.processed && !_util.previousSoapSettings.previousSoapActivated)"
+                 fxLayoutAlign="center center">
+                <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)" style="color: white;">close</mat-icon>
+            </div>
+
+            <!--<div fxLayout="row" fxLayoutAlign="center center" *ngIf="_util.previousSoapSettings.previousSoapActivated">-->
+            <!--<mat-checkbox></mat-checkbox>-->
+            <!--</div>-->
+        </div>
+    </div>
+
+
+</div>

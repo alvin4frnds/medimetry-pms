@@ -1,0 +1,53 @@
+<div fxLayout="column" fxLayoutAlign="end">
+	<div id="html-section" #htmlSection style="overflow-y: scroll;" *ngIf="!showingMedicine"></div>
+	<div id="medication-cost-section" *ngIf="showingMedicine">
+		<mat-list>
+		  <h3 mat-subheader fxLayout="row" fxLayoutAlign="space-between">
+		  	<span>Medication</span>
+		  	<span>&#8377;{{ data.calc.medicationTotal }}</span>
+		  </h3>
+		  <mat-list-item *ngFor="let medication of data.calc.groupedCalculations.medication" style=" width: auto;">
+		    <h4 class="complaint-text" mat-line fxLayout="row" fxLayoutAlign="space-between">
+		    	<span>{{medication.name}}</span>
+		    	<span>&#8377;{{medication.cost}}</span>
+		    </h4>
+		    <p mat-line><strong>{{ medication.perDay }}</strong> per day for <strong>{{ medication.forDays }}</strong> days</p>
+		  </mat-list-item>
+		  <mat-list-item *ngIf="!data.calc.groupedCalculations.medication.length" style=" width: auto;">
+		  	<h4 class="complaint-text">No medications found</h4>
+		  </mat-list-item>
+		  <mat-divider *ngIf="data.calc.groupedCalculations.medication.length"></mat-divider>
+
+		  <h3 mat-subheader *ngIf="data.calc.groupedCalculations.investigation.length" fxLayout="row" fxLayoutAlign="space-between">
+		  	<span>Investigations</span>
+		  	<span>&#8377;{{ data.calc.investigationTotal }}</span>
+		  </h3>
+		  <mat-list-item *ngFor="let investigation of data.calc.groupedCalculations.investigation" style=" width: auto;">
+		    <h4 class="complaint-text" mat-line fxLayout="row" fxLayoutAlign="space-between">
+		    	<span>{{investigation.name}}</span>
+		    	<span>&#8377;{{investigation.cost}}</span>
+		    </h4>
+		  </mat-list-item>
+		  <mat-list-item *ngIf="!data.calc.groupedCalculations.investigation.length" style="width: auto;">
+		  	<h4 class="complaint-text">No investigations found</h4>
+		  </mat-list-item>
+		  <mat-divider *ngIf="data.calc.groupedCalculations.investigation.length"></mat-divider>
+
+		  <h3 mat-subheader fxLayout="row" fxLayoutAlign="space-between">
+		  	<span>Total</span>
+		  	<span>&#8377;{{ data.calc.telling }}</span>
+		  </h3>
+		</mat-list>
+	</div>
+
+	<div fxLayout="column" fxLayoutAlign="space-between stretch" style="background-color: white; min-height: 46px; padding-top: 10px; position: sticky; bottom: 1px;">
+		<button mat-raised-button color="primary" (click)="sendPrescription()" style="margin-bottom: 4px;">Send Prescription</button>
+		<button mat-raised-button color="warn" (click)="sendPrescriptionAndCloseConsultation()" style="margin-bottom: 4px;">Send & Close Consult</button>
+		<button mat-raised-button (click)="togglePrescriptionCostView()" *ngIf="!showingMedicine && shouldShowRxPriceButton" style="margin-bottom: 4px;">Prescription cost: &#8377;{{ data.calc.telling }}</button>
+
+		<button mat-raised-button (click)="cancel()" style="margin-bottom: 4px;">Cancel</button>
+
+
+	</div>
+
+</div>

@@ -1,0 +1,53 @@
+<div style="display: flex; align-items: center;">
+    <div fxLayout="column" fxLayoutAlign="start start">
+        <p class="titleFont no-margin">
+            Upload text based system generated reports here. </p>
+        <small>Currently on Thyrocare reports are supported.</small>
+    </div>
+    <span style="flex: 1 auto;"></span>
+    <button mat-icon-button (click)="cancel()" style="margin-bottom: 40px;">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div fxLayout="column" fxLayoutAlign="start start">
+    <input type="file" id="pdf-file" 
+        #fileInput (change)="onFileChange($event);" 
+        style="display: none;"
+    >
+
+    <button mat-stroked-button color="primary" (click)="fileInput.click()">Upload File</button>
+
+    <mat-radio-group aria-label="Select type of report" [(ngModel)]="typeOfReport">
+        <mat-radio-button value="thyrocare">Thyrocare</mat-radio-button>
+    </mat-radio-group>
+
+    <div fxLayout="column" fxLayoutAlign="start center" *ngIf="loadingText.length">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        {{ loadingText }}
+    </div>
+</div>
+
+<div *ngIf="results.length">
+    <p>Results Fetched from reports: </p>
+
+    <mat-card *ngFor="let result of results" style="margin: 16px;">
+        <mat-card-header>
+            <mat-card-title>{{ result.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ul>
+                <li *ngFor="let row of result.values">
+                    <strong>{{ row.name }}: </strong>&nbsp;
+                    {{ row.value }}
+                </li>
+            </ul>
+        </mat-card-content>
+    </mat-card>
+
+    <button mat-stroked-button color="primary"
+            (click)="useTheseValues()"
+            style="margin: 16px;"
+    >Use These Values</button>
+</div>
+

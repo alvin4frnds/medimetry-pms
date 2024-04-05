@@ -1,0 +1,119 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Vitals</strong></p>
+
+        <div>
+            <mat-icon *ngIf="!_util.previousSoapSettings.previousSoapActivated && !fromDialog"
+                      class="iconStyle_big a-icon"
+                      style="margin-bottom: -15px; margin-right: 6px;" (click)="resetFields()">refresh
+            </mat-icon>
+            <mat-icon *ngIf="!_util.previousSoapSettings.previousSoapActivated && !fromDialog "
+                      class="iconStyle_big a-icon"
+                      style="margin-bottom: -15px; margin-right: 6px;" (click)="deleteSection()">close
+            </mat-icon>
+        </div>
+    </div>
+
+    <div class="inputBoxBorder" fxLayout="row wrap" style="padding-right: 5px;">
+        <div fxLayout="row" fxFlex="50">
+            <p class="complaint-text" fxFlex="50"><strong>BP (S/D)</strong></p>
+            <div fxFlex="50" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <mat-form-field fxFlex="30">
+                    <input [disabled]="_util.previousSoapSettings.previousSoapActivated" type="tel" id="vital_{{0}}"
+                           autocomplete="off"
+                           (keyup)="sendFocusToBpD($event)" maxlength="3" class="complaint-text a-vital-input-field"
+                           matInput (blur)="saveVital()"
+                           (keyup.enter)="focusToNextField(0)" style="height: 14px;"
+                           [(ngModel)]="_util.current_soap_model.vitals['vital_information']['BP(S)']"
+                           autofocus/>
+                    <mat-placeholder class="placeholder">(S)</mat-placeholder>
+                </mat-form-field>
+
+                <p fxFlex="10"><strong>/</strong></p>
+
+                <mat-form-field fxFlex="30">
+                    <input [disabled]="_util.previousSoapSettings.previousSoapActivated" type="tel" maxlength="3"
+                           autocomplete="off"
+                           id="vital_{{1}}" class="complaint-text a-vital-input-field" matInput (blur)="saveVital()"
+                           (keyup.enter)="focusToNextField(1)"
+                           style="height: 14px;"
+                           [(ngModel)]="_util.current_soap_model.vitals['vital_information']['BP(D)']" autofocus/>
+                    <mat-placeholder class="placeholder">(D)</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxFlex="50">
+            <p class="complaint-text" fxFlex="50"><strong>Height</strong></p>
+            <div fxLayout="row" fxFlex="50" fxLayoutAlign="center center">
+                <mat-form-field fxFlex="30">
+                    <input [disabled]="_util.previousSoapSettings.previousSoapActivated" type="tel" id="vital_{{2}}"
+                           class="complaint-text a-vital-input-field"
+                           matInput (blur)="saveVital()" maxlength="1" autocomplete="off"
+                           (keyup.enter)="focusToNextField(6)" (keyup)="sendFocusAfterLength($event, 2, 1)"
+                           style="height: 14px;"
+                           [(ngModel)]="_util.current_soap_model.vitals['vital_information']['Height(ft)']"
+                           autofocus/>
+                    <mat-placeholder class="placeholder">Ft</mat-placeholder>
+                </mat-form-field>
+
+                <p fxFlex="10"><strong>.</strong></p>
+
+                <mat-form-field fxFlex="30">
+                    <input [disabled]="_util.previousSoapSettings.previousSoapActivated" type="tel"
+                           id="vital_{{3}}" autocomplete="off"
+                           maxlength="2" class="complaint-text a-vital-input-field" matInput (blur)="saveVital()"
+                           (keyup.enter)="focusToNextField(3)"
+                           style="height: 14px;"
+                           [(ngModel)]="_util.current_soap_model.vitals['vital_information']['Height(in)']"
+                           autofocus/>
+                    <mat-placeholder class="placeholder">In</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div fxFlex="50" *ngFor="let vital of local_vital_keys; let position=index">
+
+            <div *ngIf="vital==='blank_vital_field' else showVital" style="padding: 5px">
+
+                <mat-form-field>
+                    <input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="new_vital" id="blank_box">
+                    <mat-placeholder class="placeholder">Select Vital</mat-placeholder>
+                </mat-form-field>
+
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let vitals of available_vitals | search:new_vital"
+                                [value]="vitals"
+                                (onSelectionChange)="onNewVitalSelected(vitals)"
+                    ><p class="complaint-text">{{vitals}}</p></mat-option>
+                </mat-autocomplete>
+
+            </div>
+            <ng-template #showVital>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" (click)="bringFocusToInput($event)">
+                    <p class="complaint-text" fxFlex="50" (click)="bringFocusToInput($event)"><strong
+                            (click)="bringFocusToInput($event)">{{vital}}</strong></p>
+                    <mat-form-field fxFlex="50">
+                        <input [disabled]="_util.previousSoapSettings.previousSoapActivated" type="tel"
+                               id="vital_{{position+4}}"
+                               autocomplete="off" class="complaint-text a-vital-input-field" matInput
+                               (blur)="saveVital()" (keyup.enter)="focusToNextField(position+4)"
+                               style="height: 14px;"
+                               [(ngModel)]="_util.current_soap_model.vitals['vital_information'][vital]" autofocus/>
+                        <mat-placeholder class="placeholder">Enter Here</mat-placeholder>
+                    </mat-form-field>
+                </div>
+            </ng-template>
+        </div>
+
+
+        <div fxLayout="row" fxLayoutAlign="end center" class="fullWidth"
+             *ngIf="available_vitals.length > 0 && btn_addNewVital_enable && !_util.previousSoapSettings.previousSoapActivated">
+            <mat-icon class="iconStyle_big a-icon"
+                      style="margin-right: 6px;" (click)="addNewVitalField()">add
+            </mat-icon>
+
+        </div>
+
+    </div>
+
+</div>

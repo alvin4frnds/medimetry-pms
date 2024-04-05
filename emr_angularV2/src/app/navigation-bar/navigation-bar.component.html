@@ -1,0 +1,672 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="true" id="left-sidenav-drawer"
+        [attr.role]="screen_detector.deviceType.isMobile ? 'dialog' : 'navigation'"
+        [mode]="screen_detector.deviceType.isMobile ? 'over' : 'side'"
+        [disableClose]="!screen_detector.deviceType.isMobile"
+        style="border: unset !important; min-width: 256px !important;">
+        <mat-toolbar style="background: #009688;">
+            <!--<div fxLayout="row" class="fullWidth" fxLayoutAlign="start center">-->
+            <!--<mat-icon style="color: white" (click)="drawer.toggle()">arrow_back</mat-icon>-->
+            <!--</div>-->
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%"
+                *ngIf="_util.header_settings.show_info_on_inner_toolbar">
+                <div fxLayoutAlign="row" fxLayoutAlign="center center"
+                    (click)="openPatientEditingPanel(header_menu_data)" style="max-width: 100%; overflow-x: hidden">
+                    <img src="{{header_menu_data.image}}" height="40" width="40" class="roundImage" />
+                    <div fxLayout="column" fxLayoutAlign="center start" style="margin-left: 10px">
+                        <p class="toolbar-title custom-font-style remove-margin-padding"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{header_menu_data.name}}</p>
+                        <p class="toolbar-subdetails custom-font-style remove-margin-padding">
+                            {{header_menu_data.phone}}</p>
+
+                        <p class="toolbar-subdetails custom-font-style remove-margin-padding"
+                            *ngIf="shouldShowPatientNotesIcons">
+                            <mat-icon class="mat-9 clickable" (click)="openNotesLayout($event)"
+                                style="height: 18px; width: 18px; font-size: 18px;">notes</mat-icon>
+                            <mat-icon class="mat-9 clickable" (click)="addNewPatientNotePrompt($event)"
+                                style="height: 18px; width: 18px; font-size: 18px;">add</mat-icon>
+                        </p>
+                    </div>
+                </div>
+
+                <button mat-icon-button color="warn" id="toggle-listening-button" (click)="toggleListeningButton()"
+                    [hidden]="!isTestingApp">
+                    <mat-icon [hidden]="micListening" class="">mic_none</mat-icon>
+                    <mat-icon [hidden]="!micListening" class="">mic</mat-icon>
+                </button>
+
+                <!--<div fxLayoutAlign="row" fxLayoutGap="10px" *ngIf="(isHandset$ | async)">-->
+                <!--<mat-icon (click)="sendDataToChildComponents('create_patient_search')">search</mat-icon>-->
+                <!--<mat-icon [matMenuTriggerFor]="notificationMenu">notifications</mat-icon>-->
+                <!--<mat-icon (click)="navigationToRoute(1)">add</mat-icon>-->
+                <!--</div>-->
+            </div>
+        </mat-toolbar>
+        <mat-nav-list *ngIf="!_util.header_settings.patient_specific_toolbar_menu; else patientSpecificListMenu">
+
+            <a mat-list-item (click)="navigationToRoute(0)" [hidden]="! _util.navigationBackAllowed">
+                <mat-icon>list</mat-icon>
+                <p class="navListItemStyle" style="margin-left: 7px">Patient List</p>
+            </a>
+            <a mat-list-item (click)="navigationToRoute(1)">
+                <mat-icon>person_add</mat-icon>
+                <p class="navListItemStyle" style="margin-left: 7px">Create Patient</p>
+            </a>
+            <a mat-list-item (click)="openCalender()" target="blank">
+                <mat-icon>event</mat-icon>
+                <p class="navListItemStyle" style="margin-left: 7px">{{ showCalender ? "Hide" : "View" }} Calendar</p>
+            </a>
+            <!-- Calender Module -->
+            <div id="calender" class="" [hidden]="! showCalender">
+
+                <!-- <mat-calendar [selected]="selectedDate" (selectedChange)="onSelect($event)"></mat-calendar> -->
+                <div (click)="$event.stopPropagation()">
+                    <!-- <mat-calendar #calendar (selectedChange)="select($event,calendar)" [dateClass]="isSelected"> -->
+                    <mat-calendar #appointmentsCalendar
+                        [selected]="selectedDate"
+                        [dateClass]="getAppointmentDates()"
+                        (monthSelected)="selectedAppointmentCalendarMonth($event)"
+                        (selectedChange)="selectCalendarDate($event)"
+                        (_userSelection)="selectCalendarDate()"
+                    ></mat-calendar>
+                </div>
+            </div>
+            <!-- calender Module ends -->
+
+        </mat-nav-list>
+
+        <!-- <app-doceree-ad></app-doceree-ad> -->
+
+        <ng-template #patientSpecificListMenu>
+            <mat-nav-list style="max-height: 100%; overflow-y: scroll;">
+                <a mat-list-item (click)="navigationToRoute(0)"  [hidden]="! _util.navigationBackAllowed">
+                    <mat-icon>list</mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px">Patient List</p>
+                </a>
+
+                <a mat-list-item (click)="createConsultationForPatient()">
+                    <mat-icon>phone</mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px">Schedule Consult</p>
+                    <div fxLayout="row" fxLayoutAlign="center center" style="margin-left: 15px"
+                        *ngIf="progress_consult_again">
+                        <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
+                    </div>
+
+                    <input matInput [ngxMatDatetimePicker]="consultAgainDatePicker" placeholder="Choose a date"
+                        [value]="this._util.getScheduleCalendarDefaultStartAt()"
+                        [hidden]="true" (dateChange)="createConsultationForPatientWithDate($event)">
+                    <ngx-mat-datetime-picker #consultAgainDatePicker
+                        stepMinute="15" touchUi="true" showSpinners="true"
+                        enableMeridian="true"
+                        [startAt]="this._util.getScheduleCalendarDefaultStartAt()"
+                        [hidden]="true"></ngx-mat-datetime-picker>
+                    <button mat-icon-button fxLayout="row" fxLayoutAlign="center center" style="margin-left: 15px"
+                        color="primary" aria-label="Consult with a specific date"
+                        (click)="consultAgainDatePicker.open(); createConsultationForPatientWithDate()">
+                        <mat-icon>calendar_today</mat-icon>
+                    </button>
+                </a>
+
+                <a mat-list-item (click)="requestPayment()">
+                    <mat-icon>payment</mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px">Request Payment</p>
+                </a>
+
+                <a mat-list-item (click)="patientHistoryGeneratorModal(true)">
+                    <mat-icon>history</mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px" [matBadge]="currentPatientsSoapCount">
+                        Generate History</p>
+                </a>
+
+                <a mat-list-item (click)="openSubmitPartnerappFeedbackModal(true)">
+                    <mat-icon>feedback</mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px">Patient's Feedback</p>
+                </a>
+
+                <a mat-list-item (click)="scrollToComponent(item);" *ngFor="let item of patientNavList">
+                    <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+                    <p class="navListItemStyle" style="margin-left: 7px">{{item.name}}</p>
+                </a>
+            </mat-nav-list>
+        </ng-template>
+    </mat-sidenav>
+    <mat-sidenav #right position="end" class="sidenav" fixedInViewport="true"
+        [disableClose]="screen_detector.deviceType.isMobile ? false : true"
+        style="background: #ffffff;border: unset !important;width: 350px;"
+        [attr.role]="screen_detector.deviceType.isMobile ? 'dialog' : 'navigation'"
+        [mode]="screen_detector.deviceType.isMobile ? 'over' : 'side'">
+        <mat-toolbar color="primary" class="toolbarColor" style="z-index: 2000;background-color: #009688" fxLayout="row"
+            fxLayoutAlign="space-around center">
+            <div fxLayout="row" class="fullWidth" fxHide="true" fxHide.sm="false" fxHide.xs="false"
+                fxLayoutAlign="start center">
+                <mat-icon style="color: white" (click)="right.toggle()">arrow_forward</mat-icon>
+
+                <p class="font-lato header-font">&nbsp;&nbsp;Alert & Notifications</p>
+            </div>
+
+            <!--Desktop Menues -->
+
+            <div *ngIf="_util.header_settings.dashboard_desktop_menu" fxLayout="row" fxHide="false" fxHide.sm="true"
+                fxHide.xs="true" fxLayoutAlign="space-around center" class="fullWidth">
+
+
+                <div fxLayout="row" fxLayoutAlign="center center" class="dashboardIconBackGround">
+
+                    <button mat-icon-button [matMenuTriggerFor]="video_call_menu" [disabled]="videoCallButtonDisable">
+                        <mat-icon [ngStyle]="{color:videoCallButtonDisable?'lightgray':'white'}">call</mat-icon>
+                    </button>
+                    <mat-menu #video_call_menu="matMenu">
+
+                        <button mat-menu-item (click)="openChatInterfaceInNewTab()">
+                            <mat-icon>chat</mat-icon>
+                            <span>Open Chat</span>
+                        </button>
+
+                        <button mat-menu-item (click)="copyLinkToClipBoard()"
+                            *ngIf="current_user_type != 'contributor'">
+                            <mat-icon>file_copy</mat-icon>
+                            <span>Copy to clipboard</span>
+                        </button>
+                        <button mat-menu-item (click)="sendLinkViaSms()" *ngIf="current_user_type != 'contributor'">
+                            <mat-icon>smartphone</mat-icon>
+                            <span>Send link via sms</span>
+                        </button>
+
+                        <button mat-menu-item (click)="openInNewTab()" *ngIf="!videoCallUrls.length">
+                            <mat-icon>launch</mat-icon>
+                            <span>Audio / Video Call</span>
+                        </button>
+
+                        <button mat-menu-item (click)="openInNewTab(videoCallUrl.link)"
+                            *ngFor="let videoCallUrl of videoCallUrls">
+                            <mat-icon>launch</mat-icon>
+                            <span>Call {{ videoCallUrl.name }}</span>
+                        </button>
+                    </mat-menu>
+                </div>
+
+                <!--<div fxLayout="row" fxLayoutAlign="center center" *ngIf="current_user_type==='contributor'  else assistant_layout">-->
+                <!--<button  mat-menu-item [matMenuTriggerFor]="video_call_menu" [disabled]="videoCallButtonDisable" (click)="openInNewTab()"  >-->
+                <!--<mat-icon style="color:white;cursor: pointer;"  [ngStyle]="{color:videoCallButtonDisable?'lightgray':'white'}"  >video_call</mat-icon>-->
+                <!--</button>-->
+                <!--</div>-->
+
+                <div fxLayout="row" fxLayoutAlign="center center" class="dashboardIconBackGround">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="!save.showLoader">
+                        <mat-icon style="color:white">save</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="previewSoap()">
+                            <mat-icon>save</mat-icon>
+                            <span>Save</span>
+                        </button>
+                        <button mat-menu-item (click)="previewSoap(true)">
+                            <mat-icon>check_circle</mat-icon>
+                            <span>Mark Done</span>
+                        </button>
+
+                        <button mat-menu-item [disabled]="videoCallButtonDisable" (click)="navigateConsultation(true)"
+                            *ngIf="_util.consultationNavigationButtonSetting['isNextConsultationVisible']">
+                            <mat-icon>arrow_forward_ios</mat-icon>
+                            <span>Next Consultation</span>
+                        </button>
+
+                        <!-- will come back later <button mat-menu-item (click)="previewPrescription()">
+                            <mat-icon>prescription</mat-icon>
+                            <span>Generate Prescription</span>
+                          </button> -->
+
+                        <!-- <button mat-menu-item (click)="navigateConsultation(false)" *ngIf="_util.consultationNavigationButtonSetting['isPreviousConsultationVisible']">
+                            <mat-icon>keyboard_arrow_left</mat-icon>
+                            <span>Previous Consultation</span>
+                          </button> -->
+
+                    </mat-menu>
+                    <img src="/assets/images/ajax-loader.gif" alt="loading ..." *ngIf="save.showLoader"
+                        style="width: 30px; margin: auto;">
+                    <!-- <mat-icon  style="color: white;" >save
+                          </mat-icon> -->
+                    <span style="font-size: 9px; color: white;" *ngIf="save.showText">{{ save.text }}</span>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="center center" class="dashboardIconBackGround">
+                    <button mat-icon-button *ngIf="!prescriptionButtion.showLoader" (click)="previewPrescription()"
+                        style="cursor: pointer;">
+                        <mat-icon><img src="/assets/images/prescription-white.png" alt="Rx"
+                                style="width: 24px; height: 24px;"></mat-icon>
+                    </button>
+
+                    <img src="/assets/images/ajax-loader.gif" alt="loading ..." *ngIf="prescriptionButtion.showLoader"
+                        style="width: 30px; margin: auto;">
+                    <span style="font-size: 9px; color: white;"
+                        *ngIf="prescriptionButtion.showText">{{ prescriptionButtion.text }}</span>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="center center"
+                    [ngClass]="_util.header_settings.show_patient_history_panel?'dashboardIconBackGroundClicked':'dashboardIconBackGround'">
+                    <mat-icon style="color:white; cursor: pointer" (click)="toggleHistory()">description</mat-icon>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center center"
+                    [ngClass]="this._util.header_settings.patient_previous_visit_layout ?'dashboardIconBackGroundClicked':'dashboardIconBackGround'">
+                    <mat-icon style="color:white; cursor: pointer" (click)="togglePreviousVisitsOfPatient()">
+                        calendar_today</mat-icon>
+                </div>
+                <div *ngIf="!screen_detector.deviceType.isMobile">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon aria-label="Example icon-button with a heart icon" style="color:white">more_vert
+                        </mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+
+                        <!--<button mat-menu-item *ngIf="getCurrentUser==='contributor'">-->
+                        <!--<mat-icon>timer</mat-icon>-->
+                        <!--<span>Schedule Availability</span>-->
+                        <!--</button>-->
+                        <button mat-menu-item (click)="refreshConsultations()"
+                            *ngIf="_util.header_settings.showRefreshButton">
+                            <mat-icon>refresh</mat-icon>
+                            <span>Refresh 2</span>
+                        </button>
+                        <button mat-menu-item *ngIf="getCurrentUser==='contributor'" (click)="toggleAvailability()">
+                            <mat-icon [ngStyle]="isDoctorOnline?{'color':'green'}:{'color':'red'}">fiber_manual_record
+                            </mat-icon>
+                            <span>{{isDoctorOnline?'Online':'Offline'}}</span>
+                        </button>
+                        <button mat-menu-item *ngIf="getCurrentUser!=='contributor'" (click)="navigationToRoute(2)">
+                            <mat-icon>group_add</mat-icon>
+                            <span>Bind With Doctors</span>
+                        </button>
+                        <button mat-menu-item (click)="logoutCurrentUser()">
+                            <mat-icon>exit_to_app</mat-icon>
+                            <span>Logout</span>
+                        </button>
+                    </mat-menu>
+                </div>
+            </div>
+
+
+            <div fxLayout="row" fxLayoutAlign="space-around center"
+                *ngIf="!_util.header_settings.dashboard_desktop_menu && !screen_detector.deviceType.isMobile"
+                style="width:100%">
+                <button mat-icon-button aria-label="Refresh listing & notification"
+                    matTooltip="Refresh listing & notification" (click)="refreshConsultations()"
+                    *ngIf="_util.header_settings.showRefreshButton">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <button mat-icon-button area-label="List of soaps with missing followup durations"
+                    (click)="openNoFollowupSoapsListing()" matTooltip="List of soaps with missing followup durations">
+                    <mat-icon [matBadge]="unfollowedUpSoapCount" matBadgeColor="warn">update</mat-icon>
+                </button>
+                <button mat-icon-button area-label="Stats for last month, about what you have done"
+                    (click)="showPmsStaffStats()" *ngIf="getCurrentUser!=='contributor'"
+                    matTooltip="Stats for last month, about what you have done">
+                    <mat-icon>attach_money</mat-icon>
+                </button>
+                <mat-slide-toggle *ngIf="getCurrentUser==='contributor'" (click)="toggleAvailability()"
+                    [(ngModel)]="isDoctorOnline">
+                    {{ isDoctorOnline ? 'Online' : 'Offline' }}
+                </mat-slide-toggle>
+                <button mat-icon-button aria-label="Manage binded doctors" matTooltip="Manage binded doctors"
+                    (click)="navigationToRoute(2)" *ngIf="getCurrentUser!=='contributor'">
+                    <mat-icon>group_add</mat-icon>
+                </button>
+                <button mat-icon-button aria-label="Logout" matTooltip="Logout" (click)="logoutCurrentUser()">
+                    <mat-icon>exit_to_app</mat-icon>
+                </button>
+            </div>
+
+
+        </mat-toolbar>
+
+
+        <app-notifications></app-notifications>
+
+        <div fxLayout="column" style="height: 90%" *ngIf="_util.header_settings.show_patient_history_panel">
+            <app-patient-history></app-patient-history>
+        </div>
+        <div fxLayout="column" style="height: 90%" *ngIf="_util.header_settings.patient_previous_visit_layout">
+
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <h4 class="custom-font-style">Previous Visits</h4>
+            </div>
+            <app-soap-history [(data)]="showPastVisitProgressBar"></app-soap-history>
+
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start" *ngIf="_util.header_settings.mobile_show_edit_patient">
+            <app-edit-patient [(data)]="currentlyEditingPatientDetails"></app-edit-patient>
+        </div>
+
+
+    </mat-sidenav>
+
+
+    <mat-sidenav-content style="background: white; overflow: hidden;">
+        <mat-toolbar style="background: #009688;">
+            <button type="button" style="color: white;" aria-label="Toggle sidenav" mat-icon-button
+                [hidden]="! _util.navigationBackAllowed"
+                (click)="drawer.toggle()" *ngIf="_util.header_settings.show_hamburger_icon">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="backToPreviousActivity()"
+                *ngIf="_util.header_settings.show_back_button">
+                <mat-icon style="color: white;" aria-label="Side nav toggle icon">arrow_back</mat-icon>
+            </button>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%"
+                *ngIf="!_util.header_settings.show_info_on_inner_toolbar && hideSearchBar">
+                <div fxLayoutAlign="row" fxLayoutAlign="center center"
+                    (click)="openPatientEditingPanel(header_menu_data)">
+                    <!--Image is hide from mobile devices. In case if its required uncomment this code-->
+                    <img src="{{header_menu_data.image}}" height="40" width="40" class="roundImage"
+                        *ngIf="!_util.header_settings.patient_specific_toolbar_menu" />
+
+                    <div fxLayout="column" fxLayoutAlign="center start" style="margin-left: 10px">
+                        <p class="toolbar-header-text custom-font-style remove-margin-padding"
+                            style="width:148px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            {{header_menu_data.name}}</p>
+                        <p class="toolbar-sub-text custom-font-style remove-margin-padding">
+                            {{header_menu_data.phone}}</p>
+
+                        <p class="toolbar-subdetails custom-font-style remove-margin-padding"
+                            *ngIf="shouldShowPatientNotesIcons">
+                            <mat-icon class="mat-9 clickable" (click)="openNotesLayout($event)"
+                                style="height: 18px; width: 18px; font-size: 18px;">notes</mat-icon>
+                            <mat-icon class="mat-9 clickable" (click)="addNewPatientNotePrompt($event)"
+                                style="height: 18px; width: 18px; font-size: 18px;">add</mat-icon>
+                        </p>
+                    </div>
+                </div>
+
+                <div fxLayoutAlign="row" fxLayoutGap="10px"
+                    *ngIf="!_util.header_settings.patient_specific_toolbar_menu; else patient_specific_menu">
+                    <button mat-icon-button (click)="toggleSearchBar()">
+                        <mat-icon style="color:white" aria-label="Toggle Search bar">search</mat-icon>
+                    </button>
+
+                    <button mat-icon-button (click)="right.toggle()">
+                        <mat-icon style="color:white" aria-label="Toggle notifications">notifications</mat-icon>
+                        <span class="badge" *ngIf="notificationsCount > 0">
+                            {{ notificationsCount }}</span>
+                    </button>
+
+                    <!-- <button mat-icon-button  (click)="navigationToRoute(1)"> -->
+                    <button mat-icon-button (click)="drawer.toggle()">
+                        <mat-icon style="color:white" aria-label="Toggle sidenav">dehaze</mat-icon>
+                    </button>
+                    <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="screen_detector.deviceType.isMobile">
+                        <mat-icon style="color:white" aria-label="Create new patient">more_vert</mat-icon>
+                    </button>
+
+                    <mat-menu #menu="matMenu">
+                        <button *ngIf="_util.header_settings.showRefreshButton" mat-menu-item
+                            (click)="refreshConsultations()">
+                            <mat-icon>refresh</mat-icon>
+                            <span>Refresh</span>
+                        </button>
+                        <button mat-menu-item (click)="showPmsStaffStats()" matTooltip="Records Overview of PMS Staff">
+                            <mat-icon>attach_money</mat-icon>
+                            <span>Staff Stats</span>
+                        </button>
+                        <button mat-menu-item (click)="openNoFollowupSoapsListing()"
+                            matTooltip="List of soaps with missing followup durations">
+                            <mat-icon [matBadge]="unfollowedUpSoapCount" matBadgeColor="warn">update</mat-icon>
+                            <span>Missed Followups</span>
+                        </button>
+                        <button mat-menu-item *ngIf="getCurrentUser==='contributor'" (click)="toggleAvailability()">
+                            <mat-icon [ngStyle]="isDoctorOnline?{'color':'green'}:{'color':'red'}">fiber_manual_record
+                            </mat-icon>
+                            <span>{{isDoctorOnline?'Online':'Offline'}}</span>
+                        </button>
+                        <button mat-menu-item *ngIf="getCurrentUser!=='contributor'" (click)="navigationToRoute(2)">
+                            <mat-icon>group_add</mat-icon>
+                            <span>Bind With Doctors</span>
+                        </button>
+
+
+                        <button mat-menu-item (click)="logoutCurrentUser()">
+                            <mat-icon>exit_to_app</mat-icon>
+                            <span>Logout</span>
+                        </button>
+                    </mat-menu>
+
+                </div>
+
+                <ng-template #patient_specific_menu>
+                    <div fxLayoutAlign="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+
+                        <!--Mobile Menu-->
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <button mat-icon-button (click)="openInNewTab()" [disabled]="videoCallButtonDisable"
+                                *ngIf="isSingleVideoCallLink() else assistant_layout">
+                                <mat-icon style="cursor: pointer;"
+                                    [ngStyle]="{color:videoCallButtonDisable?'lightgray':'white'}">call</mat-icon>
+                            </button>
+
+                            <ng-template #assistant_layout>
+                                <button mat-icon-button [matMenuTriggerFor]="video_call_menu"
+                                    [disabled]="videoCallButtonDisable">
+                                    <mat-icon [ngStyle]="{color:videoCallButtonDisable?'lightgray':'white'}">call
+                                    </mat-icon>
+                                </button>
+                                <mat-menu #video_call_menu="matMenu">
+
+                                    <button mat-menu-item (click)="openChatInterfaceInNewTab()">
+                                        <mat-icon>chat</mat-icon>
+                                        <span>Open Chat</span>
+                                    </button>
+
+                                    <button mat-menu-item (click)="copyLinkToClipBoard()"
+                                        *ngIf="current_user_type != 'contributor'">
+                                        <mat-icon>file_copy</mat-icon>
+                                        <span>Copy to clipboard</span>
+                                    </button>
+
+                                    <button mat-menu-item (click)="sendLinkViaSms()"
+                                        *ngIf="current_user_type != 'contributor'">
+                                        <mat-icon>smartphone</mat-icon>
+                                        <span>Send link via sms</span>
+                                    </button>
+
+                                    <button mat-menu-item (click)="openInNewTab()" *ngIf="!videoCallUrls.length">
+                                        <mat-icon>launch</mat-icon>
+                                        <span>Audio / Phone call</span>
+                                    </button>
+
+
+                                    <button mat-menu-item (click)="openInNewTab(videoCallUrl.link)"
+                                        *ngFor="let videoCallUrl of videoCallUrls">
+                                        <mat-icon>launch</mat-icon>
+                                        <span>Call {{ videoCallUrl.name }}</span>
+                                    </button>
+
+
+                                </mat-menu>
+
+
+                            </ng-template>
+
+                        </div>
+
+                        <div fxLayout="column" fxLayoutAlign="center center" class="dashboardIconBackGround">
+
+
+
+
+
+                            <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="!save.showLoader">
+                                <mat-icon style="color:white">save</mat-icon>
+                            </button>
+
+
+                            <mat-menu #menu="matMenu">
+
+
+                                <button mat-menu-item (click)="previewSoap()">
+                                    <mat-icon>save</mat-icon>
+                                    <span>Save</span>
+                                </button>
+                                <button mat-menu-item (click)="previewSoap(true)">
+                                    <mat-icon>check_circle</mat-icon>
+                                    <span>Mark Done</span>
+                                </button>
+
+                                <button mat-menu-item [disabled]="videoCallButtonDisable"
+                                    (click)="navigateConsultation(true)"
+                                    *ngIf="_util.consultationNavigationButtonSetting['isNextConsultationVisible']">
+                                    <mat-icon>arrow_forward_ios</mat-icon>
+                                    <span>Next Consultation</span>
+                                </button>
+
+                                <button mat-menu-item (click)="previewPrescription()">
+                                    <!-- TODO: use .svg icon instead, ask pradeep how? -->
+                                    <mat-icon><img src="/assets/images/prescription.png" alt="Rx"
+                                            style="width: 24px; height: 24px;"></mat-icon>
+                                    <span>Generate Prescription</span>
+                                </button>
+
+                                <!-- <button mat-menu-item (click)="navigateConsultation(false)" *ngIf="_util.consultationNavigationButtonSetting['isPreviousConsultationVisible']">
+                              <mat-icon>keyboard_arrow_left</mat-icon>
+                              <span>Previous Consultation</span>
+                            </button> -->
+                            </mat-menu>
+
+
+                            <img src="/assets/images/ajax-loader.gif" alt="loading ..." *ngIf="save.showLoader"
+                                style="width: 30px; margin: auto;">
+                            <!-- <mat-icon  style="color: white;" >save
+                            </mat-icon> -->
+                            <span style="font-size: 9px; color: white;" *ngIf="save.showText">{{ save.text }}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="center center"
+                            [ngClass]="_util.header_settings.mobile_show_patient_history?'dashboardIconBackGroundClicked':'dashboardIconBackGround'">
+                            <mat-icon style="color: white;" (click)="toggleHistoryForMobile()">description</mat-icon>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="center center" style="cursor: pointer;"
+                            [ngClass]="_util.header_settings.mobile_show_previous_visits?'dashboardIconBackGroundClicked':'dashboardIconBackGround'">
+                            <mat-icon style="color: white;  " (click)="togglePreviousVisitForMobile()">calendar_today
+                            </mat-icon>
+                        </div>
+
+
+                    </div>
+
+
+                </ng-template>
+            </div>
+            <div fxLayout="row" class="fullWidth" fxHide.sm="{{hideSearchBar}}" fxHide.xs="{{hideSearchBar}}" [hidden]="! _util.navigationBackAllowed">
+                <mat-card class="searchBarStyle" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon>search</mat-icon>
+                    <input placeholder="Search Patient" aria-label="Search Patient"
+                        class="custom-font-style searchBarStyleInput" [matAutocomplete]="auto" [(ngModel)]="searchTerm"
+                        (keyup)="startSearching(searchTerm)" #aPatientSearchInput id="patient-search-input">
+
+                    <button mat-button [matMenuTriggerFor]="filterPatientOnTags" mat-icon-button
+                        matTooltip="Filter the search and listing by patients tags"
+                        [matBadge]="_util.selectedPatientTags.length ? _util.selectedPatientTags.length : ''">
+                        <mat-icon>loyalty</mat-icon>
+                    </button>
+                    <mat-menu #filterPatientOnTags="matMenu">
+                        <button *ngIf="false" mat-menu-item
+                            style="display: flex; align-items: center; justify-content: space-between;"
+                            (click)="clearSelectedPatientsTags()">
+                            Clear
+                            <mat-icon style="margin-right: 0">clear_all</mat-icon>
+                        </button>
+                        <button mat-menu-item *ngFor="let tag of allPatientTags">
+                            <mat-checkbox (change)="selectUnselectPatientTag($event, tag)">{{ tag }}</mat-checkbox>
+                        </button>
+                    </mat-menu>
+
+                    <button mat-icon-button matTooltip="Filter the search and listing by centers"
+                        id="channel-center-filter" [matMenuTriggerFor]="selectingChannelCenters"
+                        [hidden]="allCenterAddresses.length < 2"
+                        [ngClass]="{'selected': _util.filterByCenterCode.length}">
+                        <mat-icon aria-label="Filter the search and listing by centers">filter_list</mat-icon>
+                    </button>
+                    <mat-menu #selectingChannelCenters="matMenu">
+                        <button mat-menu-item (click)="setChannelCenterForFiltering('')">
+                            <mat-icon>add_location</mat-icon>
+                            <span>Show all
+                            </span>
+                        </button>
+                        <button mat-menu-item *ngFor="let center of allCenterAddresses"
+                            (click)="setChannelCenterForFiltering(center.code)">
+                            <mat-icon>add_location</mat-icon>
+                            <span>{{ center.label }}
+                                <small [hidden]="!center.subLabel.length">&nbsp;( {{ center.subLabel }} )</small>
+                            </span>
+                        </button>
+                    </mat-menu>
+
+                    <mat-icon (click)="toggleSearchBar()" matTooltip="Clear searchs">clear</mat-icon>
+                </mat-card>
+            </div>
+
+            <mat-autocomplete #auto="matAutocomplete" class="force-show-scrollbar width-almost-full">
+                <mat-option *ngFor="let patient of searchedPatientList" [value]="patient.name"
+                    class="patients-search-result" (click)="viewSelectedPatientsConsultations(patient.id)">
+                    {{ patient.name }}
+                    <i>
+                        {{ patient.gender.substring(0, 1) }}
+                        | {{ _util.getTimeDifferenceInYears(patient.date_of_birth) }} yrs
+                    </i>
+                    <small> &nbsp;( {{ patient.center_name }} )</small>
+
+                    <span class="tags" *ngIf="patient.meta && patient.meta.tags && patient.meta.tags.length"
+                        style="margin-left: 10px;">
+                        <code *ngFor="let tag of patient.meta.tags | keyvalue" style="">{{ tag.value }}</code>
+                    </span>
+
+                </mat-option>
+            </mat-autocomplete>
+
+
+        </mat-toolbar>
+
+        <div [hidden]="!isTestingApp" fxLayout="row" id="is-testing-env-ribbon" fxLayoutAlign="space-around center">
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+                <p class="titleFont custom-font-style">This is Testing Enviroment</p>
+            </div>
+        </div>
+
+        <div fxLayout="row"
+            style="background: #80cbc4; height: 40px; padding-left: 10px; padding-right: 10px; width: 100%"
+            *ngIf="_util.previousSoapSettings.previousSoapActivated" fxLayoutAlign="space-around center">
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" (click)="returnToCurrentState()"
+                style="width: 100%">
+                <mat-icon style="color: white">reply</mat-icon>
+                <p class="titleFont custom-font-style" style="color: white">Return to current soap</p>
+
+                <span fxFlex="1 1 auto"></span>
+                <button mat-icon-button color="warn" (click)="unlockThisSoap()">
+                    <mat-icon aria-label="Button to unlock editing to soap">lock_open</mat-icon>
+                </button>
+            </div>
+
+        </div>
+
+        <app-patient-history *ngIf="_util.header_settings.mobile_show_patient_history"></app-patient-history>
+        <app-soap-history [(data)]="showPastVisitProgressBar" *ngIf="_util.header_settings.mobile_show_previous_visits">
+        </app-soap-history>
+        <app-edit-patient [(data)]="currentlyEditingPatientDetails"
+            *ngIf="_util.header_settings.mobile_show_edit_patient && isEditPatientMobile"></app-edit-patient>
+        <router-outlet
+            *ngIf="!_util.header_settings.mobile_show_patient_history && !_util.header_settings.mobile_show_previous_visits">
+        </router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- that's it, that is the entry point -->
+<app-voice-lex></app-voice-lex>
+
+<!--<mat-menu #notificationMenu="matMenu">-->
+
+<!--<div fxLayout="column" fxLayoutAlign="center center" style="height: 100%;">-->
+
+<!--<img src="../../assets/images/notification.png" height="80" width="80"/>-->
+<!--<p class="custom-font-style"> No Notification</p>-->
+
+<!--</div>-->
+
+<!--</mat-menu>-->

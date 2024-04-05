@@ -1,0 +1,100 @@
+::ng-deep .mat-list-base .mat-list-item.mat-2-line, .mat-list-base .mat-list-option.mat-2-line {
+    height: 52px;
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+::ng-deep mat-form-field.fullWidth div.mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-list-base .mat-list-item .mat-list-item-content, .mat-list-base .mat-list-option .mat-list-item-content {
+    padding: 0;
+}
+
+::ng-deep span.mat-form-field-label-wrapper {
+    top: 6px;
+    bottom: 6px;
+    margin: auto;
+}
+
+::ng-deep .mat-form-field-prefix {
+    top: 0 !important;
+}
+
+@media (min-width: 1281px) {
+    .popin_font {
+        color: darkgrey;
+        font-size: 12px;
+        font-family: Poppins;
+    }
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .popin_font {
+        color: darkgrey;
+        font-size: 12px;
+        font-family: Poppins;
+    }
+
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .popin_font {
+        color: darkgrey;
+        font-size: 12px;
+        font-family: Poppins;
+    }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .popin_font {
+        color: darkgrey;
+        font-size: 12px;
+        font-family: Poppins;
+    }
+
+
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .popin_font {
+        color: darkgrey;
+        font-size: 12px;
+        font-family: Poppins;
+    }
+}
+
+div.container {
+    padding: 0 20px;
+    overflow-y: scroll;
+    height: calc(100vh - 100px) !important;
+    width: inherit;
+}

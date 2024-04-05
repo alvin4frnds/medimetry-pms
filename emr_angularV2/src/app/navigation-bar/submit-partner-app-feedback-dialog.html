@@ -1,0 +1,34 @@
+<div fxLayout="column" fxFlex="end">
+    <div fxLayout="row" fxLayoutAlign="space-between">
+        <p style="margin-top: 8px">Patient's Feedback</p>
+
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon aria-label="Close this view">close</mat-icon>
+        </button>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="start">
+        <div class="ratings">
+            <div class="rating" *ngFor="let i of [1, 2, 3, 4, 5]"
+                 [ngClass]="{'unselected': rating && (i != rating)}"
+                 (click)="selectRating(i)"
+            >
+                <img [src]="'/assets/images/rating-smiley-' + i + '.png'" alt="Rating">
+                <p>{{ i }} / 5</p>
+            </div>
+        </div>
+
+        <p>
+            <mat-form-field appearance="outline" style="width: 100%">
+                <mat-label>Feedback Text</mat-label>
+                <input matInput placeholder="Text for feedback"
+                       [(ngModel)]="feedback"
+                >
+            </mat-form-field>
+        </p>
+
+        <button mat-stroked-button color="primary"
+                (click)="submitFeedback()"
+        >Submit Feedback</button>
+    </div>
+</div>

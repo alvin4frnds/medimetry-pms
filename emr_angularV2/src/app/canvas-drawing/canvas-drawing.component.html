@@ -1,0 +1,16 @@
+
+<div fxLayout="row" fxLayoutAlign="space-between end" style="padding: 10px;" fxLayoutGap="10px">
+  <mat-icon (click)="closeDialog()">close</mat-icon>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-icon (swipeleft)="clear()"(click)="flipCanvasImage()">flip_to_back</mat-icon>
+    <mat-icon (click)="clear()">cached</mat-icon>
+    <mat-icon (click)="saveCurrentImageOnCanvas()">add</mat-icon>
+  </div>
+</div>
+<canvas-whiteboard #canvasWhiteboard
+                   [lineWidth]="2"
+                   [strokeColor]="'rgb(0,0,0)'"
+                   [shouldDownloadDrawing]="true"
+                   [drawingEnabled]="true"
+                   [imageUrl]="'../assets/images/j.jpg'">
+</canvas-whiteboard>

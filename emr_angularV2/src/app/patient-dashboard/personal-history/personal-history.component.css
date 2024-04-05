@@ -1,0 +1,15 @@
+.no-base-margin {
+    margin-bottom: 0 !important;
+}
+
+.radio-chip {
+	margin-right: 20px;
+	background-color: lightgrey;
+	border-radius: 20px;
+	padding: 5px 10px 5px 10px;
+}
+
+:host ::ng-deep .mat-radio-container {
+	background-color: white;
+	border-radius: 50%;
+}

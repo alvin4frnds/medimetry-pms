@@ -1,0 +1,62 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Remarks</strong></p>
+        <mat-icon (click)="deleteSection()" class="iconStyle_big a-icon"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  *ngIf="!_util.previousSoapSettings.previousSoapActivated"
+        >
+            close
+        </mat-icon>
+    </div>
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="row"
+             class="fullWidth"
+             style="padding-right: 5px;"
+             fxLayoutAlign="center center">
+
+            <p fxFlex="5" class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong> - </strong>
+            </p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center">
+                <input type="text" class="complaint-text a-remark-input-field" (blur)="addNewRow(false, 0, false, null)"
+                       id="remarks"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       aria-label="Number" matInput [(ngModel)]="_util.current_soap_model.remark"/>
+                <mat-placeholder class="placeholder">Enter Remarks</mat-placeholder>
+            </mat-form-field>
+            <mat-icon *ngIf="!_util.previousSoapSettings.previousSoapActivated" fxFlex="5" class="iconStyle_big a-icon"
+                      (click)="deleteElement(0)">close
+            </mat-icon>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center"
+             style="padding-right: 5px;"
+        >
+            <p fxFlex="5" class="dashboard-title primary_color" fxFlex="5"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxFlexAlign="start center">
+                <input type="text"
+                       (input)="bindDurationWithSuggestion(_util.current_soap_model.follow_up)"
+                       (blur)="addNewRow(false,0,false, null)"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                       [(ngModel)]="_util.current_soap_model.follow_up"
+                       matInput
+                       [matAutocomplete]="daysSuggestion" />
+
+                <mat-placeholder class="placeholder">Follow up After (Days)</mat-placeholder>
+
+                <mat-autocomplete #daysSuggestion="matAutocomplete">
+                    <mat-option *ngFor="let option of durationSuggestion"
+                                [value]="option.value"
+                                (blur)="addNewRow(false,0,false, null)"
+                                (onSelectionChange)="addNewRow(false,0,false)">{{option.label}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-icon *ngIf="!_util.previousSoapSettings.previousSoapActivated" fxFlex="5" class="iconStyle_big a-icon"
+                      (click)="deleteElement(1)">close
+            </mat-icon>
+        </div>
+    </div>
+</div>
+

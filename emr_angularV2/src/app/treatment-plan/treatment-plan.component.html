@@ -1,0 +1,77 @@
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<h1 class="mat-headline" *ngIf="errorMessage" style="width: 100%; padding: 48px;">
+    {{ errorMessage }}
+</h1>
+
+<div *ngIf="!loading" style="padding: 10px; min-width: 800px" [hidden]="errorMessage">
+    <app-history-generator
+            *ngIf="generatedHistory && generatedHistory['data']"
+            [storedData]="generatedHistory['data']"
+    >
+    </app-history-generator>
+</div>
+
+<div *ngIf="!loading" style="padding: 24px;" [hidden]="errorMessage">
+    <span class="mat-headline">
+        Write Treatment Plan
+    </span>
+
+    <app-medicine [hideCrossButton]=true [showLockUnlockEditingToggle]="true"></app-medicine>
+
+    <mat-form-field class="full-width" appearance="outline" style="margin-top: 40px">
+            <textarea matInput [(ngModel)]="observations"
+                      required
+                      placeholder="Details on treatment plan here">
+            </textarea>
+    </mat-form-field>
+
+    <mat-form-field class="full-width" appearance="outline">
+        <input matInput placeholder="Instructions for followup"
+               [(ngModel)]="remarks">
+    </mat-form-field>
+
+    <mat-form-field class="full-width" appearance="outline">
+        <input type="text" placeholder="Follow up duration" aria-label="when should patient come next time."
+               matInput [(ngModel)]="followUp" (keyup)="updateFollowupOptions()"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of followUpOptions" [value]="option">
+                {{option}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <div style="padding: 10px" *ngIf="!showTheDialogButton">
+      <app-diagnosis [hideCrossButton]=true></app-diagnosis>
+    </div>
+
+    <mat-chip-list style="margin-top: 15px" >
+      <div *ngIf="showTheDialogButton">
+        <mat-chip (click)="showDiagnosisComponenet()">
+          <p class="chips-fonts"> + Diagnosis</p>
+        </mat-chip>
+      </div>
+    </mat-chip-list>
+
+    <p class="sub-title" style="width: 100%;"
+        *ngIf="generatedHistory && generatedHistory['data'] && generatedHistory['data']['callInvitation'] && generatedHistory['data']['callInvitation']['message'] ">
+        {{ generatedHistory['data']["callInvitation"]["localized"] }}
+    </p>
+
+    <mat-progress-bar mode="indeterminate" *ngIf="saving"></mat-progress-bar>
+
+    <!-- <button mat-stroked-button (click)="savePlan(false)" style="margin: 8px;" [hidden]="true">
+      Save Plan</button> --> <!--previously it was "Save Plan"-->
+
+
+    <button mat-stroked-button color="primary"  (click)="savePlan(true)" style="margin: 8px;" [hidden]="saving">
+        Save Plan</button>
+    <!-- previously it was => [hidden]="saving" && 'save plan & send prescription -->
+
+    <a *ngIf="generatedHistory && generatedHistory['data'] && generatedHistory['data']['callInvitation'] && generatedHistory['data']['callInvitation']['link'] "
+        mat-stroked-button
+        [href]="generatedHistory['data']['callInvitation']['link']"
+        target="_blank"
+        style="margin: 8px;">Join call</a>
+</div>

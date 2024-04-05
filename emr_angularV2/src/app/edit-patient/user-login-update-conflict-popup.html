@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>
+    Multiple patients linked
+</h1>
+<div mat-dialog-content>
+    <p> there are multiple patients are associated with this login, you can: </p>
+    <ul>
+        <li>
+            <p>Update For All: update UID for all linked patients.</p>
+        </li>
+        <li>
+            <p>Seperate patient: seperate this patient, by creating a new entry.</p>
+        </li>
+    </ul>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-button (click)="resolveConflict('updateAll')">Update For All</button>
+    <button mat-button (click)="resolveConflict('updateAll')" cdkFocusInitial>Seperate patient</button>
+</div>

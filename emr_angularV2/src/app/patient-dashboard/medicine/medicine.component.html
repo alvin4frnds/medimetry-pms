@@ -1,0 +1,325 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Medications</strong></p>
+        <div fxLayout="row" fxLayoutAlign="center center" style="margin-top: 14px;">
+
+            <mat-icon [hidden]="hidePreviousMedButton"
+                      (click)="continuePreviousMedication()"
+                      class="clickable"
+                      style="margin-right: 6px; color: #009688;"
+                      matTooltip="copy medicine from previous medication"
+            >
+                file_copy
+            </mat-icon>
+
+            <mat-icon
+                    [hidden]="_util.current_soap_model.meta['staff-meds-order'] || showStaffMedsOrderLayout || !hidePreviousMedButton"
+                    (click)="showStaffMedsOrder(false)"
+                    class="clickable"
+                    style="margin-right: 6px; color: #009688;"
+                    matTooltip="Feed the meds order response"
+            >
+                attach_money
+            </mat-icon>
+
+            <span class="kind-of-badge" *ngIf="_util.current_soap_model.meta['staff-meds-order']"
+                  style="cursor: pointer;"
+                  (click)="showStaffMedsOrder(true)"
+            >
+              {{ _util.properStaffMedsStatus(_util.current_soap_model.meta['staff-meds-order']) }}
+          </span>
+
+            <mat-icon [hidden]="hideCrossButton" (click)="deleteSection()"
+                      style="margin-right: 6px;"
+                      class="iconStyle_big a-icon" *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+                close
+            </mat-icon>
+
+            <mat-slide-toggle *ngIf="showLockUnlockEditingToggle"
+                              (change)="toggleMedicationLock()"
+                              [(ngModel)]="!_util.previousSoapSettings.previousSoapActivated"
+            >
+                Editing {{ _util.previousSoapSettings.previousSoapActivated ? 'Not' : '' }} Allowed
+            </mat-slide-toggle>
+        </div>
+    </div>
+
+    <div fxLayout="column" *ngIf="showStaffMedsOrderLayout">
+        <p style="margin-bottom: 0">How is the medicine received by patient.</p>
+        <small>Do not fill this until you have full confirmation</small>
+
+        <div fxLayout="column">
+            <mat-checkbox *ngFor="let medicine of allMedicines"
+                          [(ngModel)]="medicine.checked"
+            >
+                {{ medicine.drug_name }}
+            </mat-checkbox>
+        </div>
+
+        <mat-progress-bar mode="indeterminate" *ngIf="showStaffMedsOrderLoading"></mat-progress-bar>
+
+        <div fxLayout="row" [hidden]="showStaffMedsOrderLoading">
+            <button style="margin: 10px;" mat-raised-button color="primary"
+                    (click)="sendStaffPMSStat('staff-meds-delivered')">Delivered
+            </button>
+            <button style="margin: 10px;" mat-raised-button (click)="sendStaffPMSStat('staff-meds-from-market')">From
+                Market
+            </button>
+            <button style="margin: 10px;" mat-raised-button color="warn"
+                    (click)="sendStaffPMSStat('staff-meds-refused')">Refused
+            </button>
+        </div>
+
+    </div>
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+        <div fxLayout="column" *ngFor="let medicine of _util.current_soap_model.medication; let position = index"
+             class="fullWidth" style="padding-bottom: 12px;"
+        >
+            <div *ngIf="!medicine.processed; else showAddedMedicineLayout">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong>-</strong></p>
+                    <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                        <input class="complaint-text fullWidth a-medicine-input-field" matInput
+                               id="medi_{{position}}"
+                               [(ngModel)]="medicine.drug_name"
+                               style="height: 14px;"
+                               (keyup)="showExtraOptions(position)"
+                               (input)="showTermsSuggestions(medicine.drug_name,position)"
+                               [readonly]="_util.previousSoapSettings.previousSoapActivated"
+                               [matAutocomplete]="auto" (keyup.enter)="showExtraOptions(position)"/>
+                        <mat-placeholder class="placeholder">Drug Name</mat-placeholder>
+
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option [disabled]="!suggestion.id" [class.substitute-option]="!suggestion.id"
+                                        *ngFor="let suggestion of medicineSuggestion" [value]="suggestion.name"
+                                        (onSelectionChange)="selectSuggestion(suggestion,position)"
+                                        class="medicine-suggestion-option"
+                            >
+                                <div class="max-height-35" fxLayout="row" fxLayoutAlign="space-between center">
+                                    <mat-icon aria-hidden="false" aria-label="Verified or not?"
+                                        matTooltip="Marked verified in drug-db"
+                                        color="green" style="margin-right: 8px; margin-top: 10px;"
+                                        *ngIf="suggestion.is_verified"
+                                    >verified_user</mat-icon>
+                                    <span style="min-width: 32px;" [hidden]="suggestion.is_verified">&nbsp;</span>
+
+                                    <p class="medicine-name" fxLayout="row" fxLayoutAlign="start start">
+                                        <span>{{ suggestion.name }}</span>
+                                        <span *ngIf="suggestion.selling_price && (suggestion.selling_price != '0')" style="font-size: 14px; font-weight: bold;">&nbsp; @ 
+                                            &#8377;{{ suggestion.selling_price }} 
+                                            per {{ suggestion.unit_quantity == '1' ? 'Unit' : ( 'Strip of ' + suggestion.unit_quantity ) }}
+                                        </span>
+                                        <span *ngIf="!suggestion.is_branded || suggestion.manufacturer" style="font-size: 14px; font-style: italic;"
+                                            [hidden]="!suggestion.id"
+                                        >
+                                            &nbsp; ( {{ suggestion.is_branded ? ('by ' + suggestion.manufacturer) : 'generic' }} )
+                                        </span>
+                                    </p>
+
+                                    <div fxFlex></div>
+
+                                    <div class="not-available" *ngIf="suggestion.units_left < 1" matTooltip="Not available in stock"
+                                        style="margin-top: 10px;"
+                                    >
+                                        <i class="material-icons">storage</i>
+                                        <i class="material-icons">close</i>
+                                    </div>
+                                    <div class="available" *ngIf="suggestion.units_left > 0" matTooltip="Available in Stock"
+                                        style="margin-top: 10px;"
+                                    >
+                                        <i class="material-icons">storage</i>
+                                        <i class="material-icons">done</i>
+                                    </div>
+                                    
+                                </div>
+                                <div class="max-height-20" *ngIf="suggestion.salts && suggestion.salts.length" 
+                                    style="margin-top: -8px;" 
+                                    [matTooltip]="suggestion.compositionText"
+                                    fxLayout="row" fxLayoutAlign="start center">
+                                    <div class="salt">
+                                        <span class="material-icons" fxHide="true" fxHide.xs="false" 
+                                            style="cursor: pointer;" 
+                                            (click)="triggerTooltip($event, suggestion.compositionText)">
+                                            info</span>
+                                        {{ suggestion.compositionText }}</div>
+                                </div>
+
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="column" style="margin-left: 5%" *ngIf="medicine.show_additional_info">
+                    <!--Row 1 Dosage & Durations-->
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <mat-form-field fxFlex="25">
+                            <input matInput [matAutocomplete]="duration"
+                                   autocomplete="off"
+                                   [(ngModel)]="medicine.duration"
+                                   (input)="bindDurationWithSuggestion(medicine.duration)"
+                            />
+                            <mat-placeholder class="placeholder">Duration</mat-placeholder>
+
+                            <mat-autocomplete #duration="matAutocomplete">
+                                <mat-option *ngFor="let duration_su of duration_unit_suggestion" [value]="duration_su">
+                                    {{duration_su}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+
+                        <div class="row" fxFlex="50">
+                            <mat-checkbox class="a-vertical-checkbox"
+                                          [(ngModel)]="medicine.check_morning"
+                                          [checked]="medicine.check_morning">
+                                M
+                            </mat-checkbox>
+                            <mat-checkbox class="a-vertical-checkbox"
+                                          [(ngModel)]="medicine.check_afternoon"
+                                          [checked]="medicine.check_afternoon">
+                                A
+                            </mat-checkbox>
+                            <mat-checkbox class="a-vertical-checkbox"
+                                          [(ngModel)]="medicine.check_evening"
+                                          [checked]="medicine.check_evening">
+                                E
+                            </mat-checkbox>
+                            <mat-checkbox class="a-vertical-checkbox"
+                                          [(ngModel)]="medicine.check_night"
+                                          [checked]="medicine.check_night"
+                            >
+                                N
+                            </mat-checkbox>
+                            <mat-checkbox class="a-vertical-checkbox"
+                                          [(ngModel)]="medicine.check_sos"
+                                          [checked]="medicine.frequency > 15">
+                                SOS
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                    <!--Row 2 Intake-->
+                    <div fxLayout="column">
+                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
+                            fxLayoutAlign="space-between center" fxLayoutAlign.sm="start start" fxLayoutAlign.xs="start start">
+                            <div fxLayout="row" fxFlex.xs="100" fxLayout.sm="100" class="min-height-24"
+                                style="margin-right: 24px;"
+                            >
+                                <p class="complaint-text"
+                                   style="margin-bottom: 0; margin-top: 4px; margin-right: 4px; "><strong> Meal: &nbsp;&nbsp;</strong>
+                                </p>
+                                <mat-checkbox style="margin-right: 4px;"
+                                              [checked]="medicine.intake == 'Before Meal'"
+                                              (change)="bindMedicineIntake(0, position, $event)"
+                                >Before
+                                </mat-checkbox>
+                                <mat-checkbox
+                                        [checked]="medicine.intake == 'After Meal'"
+                                        (change)="bindMedicineIntake(1, position, $event)"
+                                >After
+                                </mat-checkbox>
+                            </div>
+
+                            <div fxLayout="row" fxFlex fxFlex.xs="100" fxFlex.sm="100" fxLayoutAlign="start center"
+                                 fxLayoutAlign.xs="start center" fxLayoutAlign.sm="start center">
+                                <p class="complaint-text"><strong>Drug Type: </strong></p>
+                                <mat-form-field label="Type?" style="max-width: 150px;margin-left: 15px">
+                                    <mat-select placeholder="Type of medicine, eg: tab"
+                                                title="Type of medicine, eg: tab"
+                                                [(ngModel)]="medicine.type">
+
+                                        <mat-option [value]="'tablet'">Tablet</mat-option>
+                                        <mat-option [value]="'cap'">Capsule</mat-option>
+                                        <mat-option [value]="'syp'">Syrup</mat-option>
+                                        <mat-option [value]="'inhaler'">Inhaler</mat-option>
+                                        <mat-option [value]="'cream'">Cream</mat-option>
+                                        <mat-option [value]="'ear drop'">Ear Drop</mat-option>
+                                        <mat-option [value]="'ear ointment'">Ear Ointment</mat-option>
+                                        <mat-option [value]="'eye drops'">Eye Drop</mat-option>
+                                        <mat-option [value]="'eyes ointment'">Eye Ointment</mat-option>
+                                        <mat-option [value]="'inj'">Injection</mat-option>
+                                        <mat-option [value]="'mixture'">Mixture</mat-option>
+                                        <mat-option [value]="'ointment'">Ointment</mat-option>
+                                        <mat-option [value]="'pess'">Pessary</mat-option>
+                                        <mat-option [value]="'powder'">Powder</mat-option>
+
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+
+                        <div fxLayout="row">
+                            <mat-form-field style="margin-top: 5px" fxFlex>
+                                <input matInput class="complaint-text"
+                                       style="height: 14px;"
+                                       [(ngModel)]="medicine.remarks"/>
+                                <mat-placeholder class="placeholder">Special Notes</mat-placeholder>
+
+
+                            </mat-form-field>
+
+                            <button mat-icon-button class="teal-color"
+                                    style="margin-bottom: 10px; margin-right: 4px;"
+                                    (click)="clearMedicine(position)"
+                            >
+                                <mat-icon>remove</mat-icon>
+                            </button>
+
+                            <button mat-icon-button class="teal-color"
+                                    style="margin-bottom: 10px; margin-right: 4px;"
+                                    (click)="addNewRow(false, position, false)"
+                            >
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <ng-template #showAddedMedicineLayout>
+                <div fxLayout="row" class="fullWidth">
+                    <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong>-</strong></p>
+                    <div fxLayout="column" fxFlex="90"
+                         (click)="beginMedicineEditing(medicine)">
+                        <p class="complaint-text remove-margin-padding">
+                            <span *ngIf="medicine.type">({{ medicine.type }})&nbsp;</span>
+                            <strong>{{medicine.drug_name}}</strong></p>
+                        <p class="complaint-text remove-margin-padding"><i>
+                            {{ _util.medicineFrequencyExtractor(medicine.frequency, true)}}
+                            {{medicine.duration?'for '+medicine.duration:'' }} {{medicine.duration_unit}}
+                            {{medicine.intake}}</i></p>
+                        <p class="complaint-text remove-margin-padding"><i>{{medicine.remarks}}</i></p>
+                        <p class="complaint-text remove-margin-padding" *ngIf="medicine['reasoning']" color="warn">
+                            <strong>{{ medicine['remaining'] }} </strong>
+                             left: <i>{{ medicine['reasoning'] }}</i>
+                        </p>
+
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="center center"
+                         *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+                        <mat-icon class="iconStyle_big a-icon" fxHide
+                                  (click)="beginMedicineEditing(medicine)">
+                            edit
+                        </mat-icon>
+                        <mat-icon class="iconStyle_big a-icon" (click)="deleteRow(position)">
+                            close
+                        </mat-icon>
+                    </div>
+
+                    <!--<ng-template #showRefillLayout>-->
+                    <!--<div fxLayout="row" fxLayoutAlign="center center">-->
+                    <!--<mat-checkbox></mat-checkbox>-->
+                    <!--</div>-->
+                    <!--</ng-template>-->
+                </div>
+            </ng-template>
+        </div>
+
+    </div>
+
+
+</div>
+

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MediMetry Emr | Online Doctor Practice Tool | Best EMR in india </title>
+    <style>
+html, body, #wrapper {
+       height:100%;
+       width: 100%;
+       margin: 0;
+       padding: 0;
+       border: 0;
+    }
+    #wrapper td {
+       vertical-align: middle;
+       text-align: center;
+    }
+</style>
+</head>
+<body>
+
+  <table id="wrapper">
+      <tr>
+         <td><img style="max-width: 100vw;" id="image"  src="" alt="" /></td>
+      </tr>
+   </table>
+
+</body>
+<script>
+	
+	document.addEventListener("DOMContentLoaded", function(event) {
+    var url_string = window.location.href; //window.location.href
+	var url = new URL(url_string);
+	var image = url.searchParams.get("image");
+	document.getElementById("image").src = image;
+});
+
+</script>
+</html>

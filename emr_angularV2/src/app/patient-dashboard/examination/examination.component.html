@@ -1,0 +1,50 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Notes</strong></p>
+        <mat-icon (click)="deleteSection()"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  class="iconStyle_big a-icon" *ngIf="!_util.previousSoapSettings.previousSoapActivated">close
+        </mat-icon>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="row" *ngFor="let examination of _util.current_soap_model.examinations; let position = index"
+             class="fullWidth"
+             fxLayoutAlign="center center">
+            <p class="dashboard-title primary_color" style="margin: 10px 0;" fxFlex="5"><strong> - </strong></p>
+
+            <mat-form-field fxFlex="90" fxFlexAlign="center center" class="fullWidth">
+              <textarea class="fullWidth editText complaint-text a-examination-input-field" matInput
+                      id="exam_{{position}}"
+                      cols="2"
+                       style="height: 14px;"
+                       (keyup)="addNextRow()"
+                       (blur)="addNewRow(false,position,false)"
+                       (keyup.enter)="sendFocusToNextElement(position)"
+                       [(ngModel)]="examination.remarks"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                   placeholder="Add notes"></textarea>
+            </mat-form-field>
+
+
+            <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                         *ngIf="examination.showProgressBar"></mat-spinner>
+            <div fxLayout="row" *ngIf="examination.processed && !_util.previousSoapSettings.previousSoapActivated"
+                 fxLayoutAlign="center center">
+                <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+            </div>
+            <div fxLayout="row" *ngIf="!(examination.processed && !_util.previousSoapSettings.previousSoapActivated)"
+                 fxLayoutAlign="center center">
+                <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)" style="color: white;">close
+                </mat-icon>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>

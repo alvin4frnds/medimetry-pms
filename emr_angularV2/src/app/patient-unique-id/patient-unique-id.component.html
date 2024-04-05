@@ -1,0 +1,58 @@
+
+
+
+
+ <div fxLayout="row" class="primary_bg_color" fxLayoutAlign="center center" fxLayoutGap="15px" *ngIf="isCurrentModeProcessing">
+    <mat-spinner diameter="15" strokeWidth="3"></mat-spinner>
+
+  <p class="complaint-text" style="color: white">Creating Consultation</p>
+ </div>
+  <mat-tab-group [selectedIndex]="selectedIndex" >
+
+
+
+    <mat-tab label="Complaints">
+          <app-chief-complaints [fromDialog]="true"></app-chief-complaints>
+            <div style="margin-top: 15px" fxLayout="row" fxLayoutAlign="end center">
+                  <p class="showPointer complaint-text" (click)="switchToTab(1)" style="color: teal"><b>Go To History >> </b></p>
+            </div>
+    </mat-tab>
+
+    <mat-tab label="History">
+      <app-patient-history [fromDialog]="true"></app-patient-history>
+      <div style="margin-top: 15px" fxLayout="row" fxLayoutAlign="end center">
+        <p class="showPointer complaint-text" (click)="switchToTab(0)" style="color: teal;margin-right: 45px;"><b> &#x3C;&#x3C; Go To Previous Section </b></p>
+
+        <p class="showPointer complaint-text" (click)="switchToTab(2)" style="color: teal"><b>Go To Vitals >> </b></p>
+
+          <!-- <mat-icon class="a-icon"  (click)="switchBackTab()">arrow_back</mat-icon>
+          <mat-icon class="a-icon" (click)="switchNextTab()">arrow_forward</mat-icon> -->
+    </div>
+    </mat-tab>
+
+    <mat-tab label="Vitals">
+          <app-vitals [fromDialog]="true"></app-vitals>
+          <div style="margin-top: 15px" fxLayout="row" fxLayoutAlign="end center">
+            <p class="showPointer complaint-text" (click)="switchToTab(1)" style="color: teal;margin-right: 45px;"><b> &#x3C;&#x3C; Go To Previous Section </b></p>
+            <p class="showPointer complaint-text" (click)="switchToTab(3)" style="color: teal"><b>Go To Patient Information >> </b></p>
+
+        </div>
+    </mat-tab>
+
+    <mat-tab label="Patient Information">
+        <app-patient-information></app-patient-information>
+
+      <div style="margin-top: 15px" fxLayout="row" fxLayoutAlign="end center">
+
+          <p class="showPointer complaint-text" (click)="switchToTab(2)" style="color: teal;margin-right: 45px;"><b> &#x3C;&#x3C; Go To Previous Section </b></p>
+          <p class="showPointer complaint-text" (click)="closeDialog()" style="color: teal" *ngIf="!isCurrentModeProcessing" ><b>Done >> </b></p>
+
+      </div>
+  </mat-tab>
+
+
+
+
+  </mat-tab-group>
+
+

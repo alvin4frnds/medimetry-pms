@@ -1,0 +1,117 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Test Results</strong></p>
+        <mat-icon (click)="deleteSection()"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                  class="iconStyle_big a-icon">
+            close
+        </mat-icon>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="column" *ngFor="let result of _util.current_soap_model.results; let position = index"
+             class="fullWidth"
+             fxFlexAlign="center center"
+        >
+            <mat-chip-list *ngIf="investigationChipsSuggestion.length && (investigationChipsIndex === position)">
+                <mat-chip *ngFor="let chip of investigationChipsSuggestion"
+                          (click)="selectComponentSuggestion(chip, position)">
+                    <p class="complaint-text">{{chip.name}}</p>
+                </mat-chip>
+            </mat-chip-list>
+
+            <div fxFlex="row" fxLayoutAlign="center center" class="fullWidth"
+                 *ngIf="(result.type==='text') || (result.type==='json')">
+                <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong>-</strong></p>
+                <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                    <input class="complaint-text fullWidth a-result-input-field"
+                           matInput id="res_{{position}}"
+                           [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                           (blur)="addNewRow(false,position,false,$event)"
+                           (keyup)="addNextRow()"
+                           (keydown)="suggestInvestigationNames(result.remarks, position)"
+                           (keyup.enter)="sendFocusToNextElement(position)"
+                           [(ngModel)]="result.remarks"
+                           style="height: 14px;"
+                           title="Test result text"/>
+                    <mat-placeholder class="placeholder">Add Results</mat-placeholder>
+
+                </mat-form-field>
+                <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                             *ngIf="result.showProgressBar"></mat-spinner>
+                <div fxLayout="row" *ngIf="result.processed" fxLayoutAlign="center center"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                >
+                    <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+                </div>
+                <div fxLayout="row" *ngIf="!result.processed" fxLayoutAlign="center center"
+                  [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                >
+                    <mat-icon class="icon_style_small a-icon" style="color: transparent;">close</mat-icon>
+                </div>
+            </div>
+
+            <div fxLayout="column" *ngIf="result.type === 'json'">
+                <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let field of result.json.fields">
+                    <span fxFlex="35">{{ field.name }}</span>
+                    <mat-form-field fxFlex="15" fxFlexAlign="start center" class="fullWidth">
+                        <input class="complaint-text fullWidth a-result-input-field"
+                               matInput
+                               [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                               [(ngModel)]="field.value"
+                               style="height: 14px;"
+                               (blur)="addNewRow(true, position)"
+                               title="Field value"/>
+                        <mat-placeholder class="placeholder">Value</mat-placeholder>
+                    </mat-form-field>
+
+                    <div fxFlex="50" *ngIf="field.reference && field.reference.length">
+                        <ul class="no-margin">
+                            <li *ngFor="let ref of field.reference"
+                                [hidden]="! ref.key"
+                            >
+                                <strong>{{ ref.key }}: &nbsp;</strong>
+                                {{ ref.value }}
+                            </li>
+                        </ul>
+                        <hr style="margin-right: 40px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div fxLayout="row wrap" fxLayoutGap="10px" style="margin-top: 10px;margin-left: 5%">
+            <div *ngFor="let image of _util.current_soap_model.results; let position=index">
+                <div fxLayout="column" *ngIf="image.type==='image'">
+                    <a href="{{ _util.getAttachmentHref(image.test_result) }}" target="_blank"><img
+                            *ngIf="image.type==='image'" src="{{ _util.getAttachmentThumb(image.test_result) }}"
+                            height="50" width="50" style="border-radius: 40px"></a>
+                    <p class="complaint-text showPointer" style="color:blue"
+                       (click)="deleteRow(position)"
+                       [hidden]="_util.previousSoapSettings.previousSoapActivated"
+                    >
+                        <strong>Delete</strong>
+                    </p>
+                </div>
+            </div>
+            <mat-spinner *ngIf="progressImageUpload" diameter="15" strokeWidth="3"
+                         style="margin-top: 15px"></mat-spinner>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="end center" [hidden]="_util.previousSoapSettings.previousSoapActivated">
+            <mat-icon class="dashboard-cancel-icon-syle a-big-icon iconStyle_big"
+                      (click)="showTextReportDialog($event)">
+                picture_as_pdf
+            </mat-icon>
+
+            <input type="file" #uploadImage style="display: none;" (change)="uploadReports($event,0)">
+            <mat-icon class="dashboard-cancel-icon-syle a-big-icon iconStyle_big" (click)="uploadImage.click()">
+                attachment
+            </mat-icon>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,64 @@
+#voice-lex-container {
+    min-height: 200px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+
+    margin: 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+}
+
+span.unfinal-phrase {
+    cursor: pointer;
+    margin: 10px 20px 10px 0;
+    border-radius: 5px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+p, span {
+    white-space: normal;
+
+}
+
+span.intrim-text {
+    color: black;
+}
+
+span.final-text {
+    color: teal;
+    font-weight: bold;
+}
+
+#models-container {
+    background-color: white;
+    opacity: 1;
+    overflow: scroll !important;
+    max-height: 256px !important;
+}
+
+p#recorded-text {
+    overflow: scroll !important;
+    max-height: 256px !important;
+}
+
+div.padded {
+    padding-left: 36px;
+}
+
+div.padded > span {
+    margin-left: -36px;
+}
+
+div#voice-lex-container.full-screen mat-card.recorder {
+    max-width: 200px;
+}
+
+div#voice-lex-container.full-screen #models-container {
+    max-height: 512px !important;
+}

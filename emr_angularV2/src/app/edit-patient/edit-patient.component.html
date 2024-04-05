@@ -1,0 +1,139 @@
+<div class="container">
+    <div fxLayout="row" fxLayoutAlign="space-between" layout-margin
+         style="align-items: center; justify-content: space-between; align-content: center; margin-top: 20px;">
+        <mat-card-title class="dashboard-title"><strong>Edit Patient Details</strong></mat-card-title>
+        <mat-icon class="a-big-icon" (click)="closeEditPatientLayout()">close</mat-icon>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!(details && details.channel)">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="start" *ngIf="details && details.channel">
+        <mat-list >
+            <mat-list-item >
+                <mat-icon mat-list-icon>account_balance</mat-icon>
+                <h4 mat-line class="dashboard-title"><strong>Channel Name</strong></h4>
+                <p mat-line> {{ details.channel.name }} </p>
+            </mat-list-item>
+            <mat-list-item [matTooltip]="details.center.address" style="height: fit-content;">
+                <mat-icon mat-list-icon>pin_drop</mat-icon>
+                <h4 mat-line class="dashboard-title"><strong>Center Address</strong></h4>
+                <p mat-line style="text-overflow: ellipsis; width: 224px; white-space: normal; height: fit-content;"> {{ details.center.address }} </p>
+            </mat-list-item>
+            <mat-list-item *ngIf="details['ajent']['name']">
+                <mat-icon mat-list-icon>person</mat-icon>
+                <h4 mat-line class="dashboard-title"><strong>Partner Name</strong></h4>
+                <p mat-line> {{ details.ajent.name }} </p>
+            </mat-list-item>
+            <mat-list-item *ngIf="details['ajent']['mobile']">
+                <mat-icon mat-list-icon>phone</mat-icon>
+                <h4 mat-line class="dashboard-title"><strong>Partner Mobile</strong></h4>
+                <p mat-line>
+                    <a href="{{ 'tel:' + details.ajent.mobile }}">{{ details.ajent.mobile }}</a>
+                </p>
+            </mat-list-item>
+            <mat-list-item *ngIf="details['ajent']['email']">
+                <mat-icon mat-list-icon>alternate_email</mat-icon>
+                <h4 mat-line class="dashboard-title"><strong>Partner E-Mail</strong></h4>
+                <p mat-line> {{ details.ajent.email }} </p>
+            </mat-list-item>
+        </mat-list>
+        <p style="">
+            <mat-form-field appearance="outline" class="fullWidth">
+                <input type="text" placeholder="Center Name"
+                       [(ngModel)]="enteredCenterName"
+                       (keyup)="filterCenters(enteredCenterName)"
+                       aria-label="Center" matInput [matAutocomplete]="patientCenters">
+                <mat-hint>Select From Dropdown to complete.</mat-hint>
+                <mat-autocomplete #patientCenters="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredCenters" [value]="option"
+                                (click)="selectCenter(option)"
+                    >
+                        {{ option.name }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+        </p>
+        <p style="margin-bottom: 0">
+            <mat-form-field appearance="outline" class="fullWidth">
+                <mat-label style="">Mobile No.</mat-label>
+                <span matPrefix>91 &nbsp;</span>
+                <input type="number" matInput [placeholder]="data.uidPlaceholder" [(ngModel)]="data.mobile_number">
+                <mat-hint style="color: red;" *ngIf="data.uidHelperText.length"></mat-hint>
+            </mat-form-field>
+        </p>
+        <p style="margin-bottom: 0">
+            <mat-form-field appearance="outline" class="fullWidth">
+                <mat-label style="">Patient name</mat-label>
+                <input matInput placeholder="Placeholder" [(ngModel)]="data.name">
+                <mat-hint style="display: none;">Hint</mat-hint>
+            </mat-form-field>
+        </p>
+        <p style="margin-bottom: 0">
+            <mat-form-field appearance="outline" class="fullWidth">
+                <mat-label style="">Patient Age</mat-label>
+                <input type="number" matInput placeholder="Placeholder" [(ngModel)]="data.age">
+                <mat-hint>In Years</mat-hint>
+            </mat-form-field>
+        </p>
+        <p style="margin-bottom: 0">
+            <mat-radio-group [(ngModel)]="data.gender" fxLayout="row" fxLayoutAlign="space-around">
+                <mat-radio-button value="male">Male</mat-radio-button>
+                <mat-radio-button value="female">Female</mat-radio-button>
+            </mat-radio-group>
+        </p>
+
+        <p style="margin-bottom: 0">
+            <mat-checkbox [(ngModel)]="meta.haveCard"
+                [labelPosition]="'before'"
+                          (change)="haveCardStatusChanged()"
+            >Signed up for Health card ?</mat-checkbox>
+        </p>
+
+        <mat-form-field style="width: 100%" appearance="outline">
+            <mat-chip-list #chipList aria-label="Fruit selection">
+                <mat-chip
+                        *ngFor="let tag of meta.tags"
+                        [selectable]="chipsOptions.selectable"
+                        [removable]="chipsOptions.removable"
+                        (removed)="remove(tag)">
+                    {{tag}}
+                    <mat-icon matChipRemove *ngIf="chipsOptions.removable">
+                        cancel</mat-icon>
+                </mat-chip>
+                <input
+                        placeholder="add more labels"
+                        [formControl]="chipsOptions.patienTagCtrl"
+                        id="patient-tag-input-field"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="chipsOptions.addOnBlur"
+                        (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let tag of filteredPatientTags | async" [value]="tag">
+                    {{tag}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="fullWidth" appearance="outline" style="margin-top: 8px;">
+            <mat-label style="">Anything about patient, </mat-label>
+            <textarea matInput 
+                [(ngModel)]="meta.customText" 
+                placeholder="Something about the patient ?"
+            ></textarea>
+          </mat-form-field>
+
+        <button mat-stroked-button color="primary" class="fullWidth" (click)="updatePatient()"
+                style="margin-top: 40px; margin-bottom: 10px;"
+        >{{ updateButtonTitle }}</button>
+
+        <button mat-stroked-button color="warn" class="fullWidth" (click)="deletePatient()"
+                style="margin-bottom: 20px;"
+        >{{ removeButtonTitle }}</button>
+    </div>
+</div>

@@ -1,0 +1,205 @@
+::ng-deep .mat-form-field-underline {
+  display: none !important;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+  padding-bottom: 0px !important;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+  padding-bottom: 0px !important;
+}
+
+::ng-deep .mat-form-field-infix {
+  border-top: 0px !important;
+}
+
+.inputBoxBorder {
+  border: 1px solid rgba(34, 36, 38, .15) !important;
+  color: rgba(0, 0, 0, .87);
+  border-radius: .28571429rem;
+  font-size: 14px;
+  text-align: start;
+  padding-left: 10px;
+}
+
+/*input {
+  -webkit-appearance: searchfield !important;
+}
+
+*::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button !important;
+}*/
+
+/* You can add global styles to this file, and also import other style files */
+
+@media (min-width: 1281px) {
+
+  .boxLayout {
+    color: rgba(0, 0, 0, .87);
+    background-color: white;
+    border-radius: .28571429rem;
+    font-size: 14px;
+    text-align: start;
+    padding: 8px;
+    width: 100%;
+  }
+
+  .inputFieldStyle {
+    font-family: Poppins;
+    font-size: 14px;
+  }
+  .font_patient_title {
+    color: black !important;
+    font-size: 14px !important;
+    font-weight: 500;
+  }
+
+  .font_patient_infor {
+    color: grey !important;
+    font-size: 11px !important;
+  }
+
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+  .boxLayout {
+    color: rgba(0, 0, 0, .87);
+    background-color: white;
+    border-radius: .28571429rem;
+    font-size: 14px;
+    text-align: start;
+    padding: 8px;
+    width: 100%;
+  }
+  .inputFieldStyle {
+    font-family: Poppins;
+    font-size: 14px;
+  }
+  .font_patient_title {
+    color: black !important;
+    font-size: 14px !important;
+    font-weight: 500;
+  }
+
+  .font_patient_infor {
+    color: grey !important;
+    font-size: 11px !important;
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .font_patient_title {
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: 500;
+  }
+
+  .font_patient_infor {
+    color: grey !important;
+    font-size: 10px !important;
+  }
+  .boxLayout {
+    color: rgba(0, 0, 0, .87);
+    background-color: white;
+    border-radius: .28571429rem;
+    font-size: 14px;
+    text-align: start;
+    padding: 8px;
+    width: 100%;
+  }
+  .inputFieldStyle {
+    font-family: Poppins;
+    font-size: 13px;
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+
+  .boxLayout {
+    color: rgba(0, 0, 0, .87);
+    background-color: white;
+    border-radius: .28571429rem;
+    font-size: 14px;
+    text-align: start;
+    padding: 8px;
+    width: 100%;
+  }
+  .inputFieldStyle {
+    font-family: Poppins;
+    font-size: 12px;
+  }
+  .font_patient_title {
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: 500;
+  }
+
+  .font_patient_infor {
+    color: grey !important;
+    font-size: 10px !important;
+  }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+
+  .boxLayout {
+    color: rgba(0, 0, 0, .87);
+    background-color: white;
+    border-radius: .28571429rem;
+    font-size: 14px;
+    text-align: start;
+    padding: 8px;
+    width: 100%;
+  }
+  .inputFieldStyle {
+    font-family: Poppins;
+    font-size: 12px;
+  }
+
+  .font_patient_title {
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: 500;
+  }
+
+  .font_patient_infor {
+    color: grey !important;
+    font-size: 10px !important;
+  }
+}
+
+.mat-focused .placeholder{
+  color:transparent;
+}
+
+mat-select.country-selection {
+    max-width: 50px;
+}
+

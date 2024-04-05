@@ -1,0 +1,583 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* remove scrollbar space */
+  background:transparent; /* optional: just make scrollbar invisible */
+}
+
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.force-show-scrollbar::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+.force-show-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.fullWidth {
+  width: 100% !important;
+}
+
+.custom-font-style {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.remove-margin-padding {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.filled_button {
+  background: #009688;
+  color: white;
+}
+
+.mat-progress-spinner circle, .mat-spinner circle {
+  stroke: #80cbc4 !important;
+}
+
+.toolbar-header-text {
+  font-size: 15px;
+  color: white;
+}
+
+.toolbar-sub-text {
+  font-size: 12px;
+  color: white;
+}
+
+.roundImage {
+  border-radius: 50px;
+}
+
+mat-toolbar {
+  font: unset !important;
+}
+
+.mat-toolbar {
+  font: unset !important;
+}
+
+@media (min-width: 1281px) {
+  .editText {
+    color: black;
+    font-size: 12px;
+    font-family: Poppins;
+  }
+
+  .container {
+    padding: 10px;
+    height: 87% !important;
+  }
+
+  .toolbar-header-text {
+    font-size: 15px;
+    color: white;
+  }
+
+  .toolbar-sub-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .titleFont {
+    color: black;
+    size: 15px;
+  }
+
+  .subTitleFont {
+    color: darkgrey;
+    size: 12px;
+  }
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .editText {
+    color: black;
+    font-size: 12px;
+    font-family: Poppins;
+  }
+
+  .container {
+    padding: 10px;
+    height: 85% !important;
+  }
+
+  .toolbar-header-text {
+    font-size: 15px;
+    color: white;
+  }
+
+  .toolbar-sub-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .titleFont {
+    color: black;
+    size: 15px;
+  }
+
+  .subTitleFont {
+    color: darkgrey;
+    size: 12px;
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .editText {
+    color: black;
+    font-size: 12px;
+    font-family: Poppins;
+  }
+
+  .container {
+    padding: 10px;
+    height: 92% !important;
+  }
+
+  .iconStyle_big {
+    font-size: 15px;
+    color: #009688;
+  }
+
+  .icon_style_small {
+    font-size: 12px;
+    color: #80cbc4;
+  }
+
+  .toolbar-header-text {
+    font-size: 14px;
+    color: white;
+  }
+
+  .toolbar-sub-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .titleFont {
+    color: black;
+    size: 13px;
+  }
+
+  .subTitleFont {
+    color: darkgrey;
+    size: 11px;
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .editText {
+    color: black;
+    font-size: 12px;
+    font-family: Poppins;
+  }
+
+  .container {
+    padding: 10px;
+    height: 92% !important;
+  }
+
+  .iconStyle_big {
+    font-size: 15px;
+    color: #009688;
+  }
+
+  .icon_style_small {
+    font-size: 12px;
+    color: #80cbc4;
+  }
+
+  .titleFont {
+    color: black;
+    size: 13px;
+  }
+
+  .subTitleFont {
+    color: darkgrey;
+    size: 11px;
+  }
+
+  .toolbar-header-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .toolbar-sub-text {
+    font-size: 11px;
+    color: white;
+  }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .editText {
+    color: black;
+    font-size: 12px;
+    font-family: Poppins;
+  }
+
+  .container {
+    padding: 10px;
+    height: 92% !important;
+  }
+
+  .iconStyle_big {
+    font-size: 15px;
+    color: #009688;
+  }
+
+  .icon_style_small {
+    font-size: 12px;
+    color: #80cbc4;
+  }
+
+  .titleFont {
+    color: black;
+    size: 13px;
+  }
+
+  .subTitleFont {
+    color: darkgrey;
+    size: 11px;
+  }
+
+  .toolbar-header-text {
+    font-size: 12px;
+    color: white;
+  }
+
+  .toolbar-sub-text {
+    font-size: 11px;
+    color: white;
+  }
+
+}
+
+.secondaryColor {
+  color: #80cbc4;
+}
+
+.registration_inputbox {
+  padding: 5px;
+  font-size: 12px;
+}
+
+.registration-icons {
+  font-size: 15px;
+}
+
+.searchBarStyle {
+  background: white;
+  padding: 4px;
+  width: 100%;
+}
+
+.searchBarStyleInput {
+  background: white;
+  padding: 4px !important;
+  border: 0;
+  width: 100%;
+  color: black;
+}
+
+.searchBarStyle:hover {
+  background: white;
+  width: 100%;
+}
+
+.searchBarStyleInput:focus {
+  background: white;
+  padding: 4px !important;
+  border: 0px;
+  width: 100%;
+  color: black;
+  outline: none;
+}
+
+.dashboard-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 15px !important;
+}
+
+.dashboard-cancel-icon-syle {
+  font-size: 18px;
+}
+
+.iconStyle_big {
+  color: #009688;
+}
+
+.icon_style_small {
+  color: #80cbc4;
+}
+
+.primary_color {
+  color: #009688;
+}
+
+.primary_bg_color {
+  background: #009688;
+}
+
+.dashboardIcon {
+  color: #80cbc4;
+}
+
+
+.dashboardIcon:hover {
+  color: white;
+
+}
+
+.activeMatIconForMobile {
+  color: 80cbc4;
+}
+
+.activeMatIconForMobile:active{
+
+}
+
+.teal-color {
+    color: #80cbc4 !important;
+}
+
+md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bara, .a-primary-color {
+    color: #008081 !important;
+    background-color:#66b2b2 !important;
+}
+mat-icon.a-big-icon {
+    width: 26px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+mat-icon.a-icon {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+mat-checkbox.a-vertical-checkbox > label {
+    flex-direction: column;
+
+}
+
+div.a-create-patient-input-box {
+    margin-bottom: 5px !important;
+}
+
+mat-checkbox.a-mobile-is-mine {
+    padding-top: 8px;
+}
+
+mat-checkbox.a-mobile-is-mine .mat-checkbox-inner-container
+{
+    margin-right: auto;
+}
+
+/* When the input is focused */
+mat-form-field.mat-focused label {
+    color: teal;
+}
+
+.mat-input-element {
+    caret-color: teal !important;
+}
+
+.a-create-patient-input-box mat-icon {
+    min-width: 24px;
+    margin: auto;
+
+}
+
+.showPointer{
+  cursor: pointer;
+}
+
+::-webkit-input-placeholder { opacity: 1; -webkit-transition: opacity .5s; transition: opacity .5s; }  /* Chrome <=56, Safari < 10 */
+:-moz-placeholder { opacity: 1; -moz-transition: opacity .5s; transition: opacity .5s; } /* FF 4-18 */
+::-moz-placeholder { opacity: 1; -moz-transition: opacity .5s; transition: opacity .5s; } /* FF 19-51 */
+:-ms-input-placeholder { opacity: 1; -ms-transition: opacity .5s; transition: opacity .5s; } /* IE 10+ */
+::placeholder { opacity: 1; transition: opacity .5s; } /* Modern Browsers */
+
+*:focus::-webkit-input-placeholder { opacity: 0; } /* Chrome <=56, Safari < 10 */
+*:focus:-moz-placeholder { opacity: 0; } /* FF 4-18 */
+*:focus::-moz-placeholder { opacity: 0; } /* FF 19-50 */
+*:focus:-ms-input-placeholder { opacity: 0; } /* IE 10+ */
+*:focus::placeholder { opacity: 0; } /* Modern Browsers */
+
+html, #patient-dashboard-container {
+    scroll-behavior: smooth;
+}
+
+.min-height-24 {
+    min-height: 24px;
+}
+
+*[hidden] {
+    display: none !important;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.ratings .rating {
+    width: 16%;
+    margin: 2%;
+    float: left;
+}
+
+.ratings .rating.unselected { opacity: 0.5; }
+
+div.rating > p {
+    margin-top: 0;
+    text-align: center
+}
+
+mat-chip-list.patient-tags mat-chip {
+    font-size: 10px;
+    margin: 2px !important;
+    padding: 2px 8px !important;
+    height: 10px;
+    min-height: 22px;
+    border-radius: 7px;
+    cursor: help;
+}
+
+span.kind-of-badge {
+    border-radius: 8px;
+    background-color: teal;
+    color: white;
+    padding: 2px 6px;
+    width: auto;
+    white-space: nowrap;
+    font-size: 10px;
+    margin: 0 8px 0 0;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+::ng-deep mat-form-field.fullWidth div.mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+mat-form-field.fullWidth div.mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+p.complaint-text[color=warn] {
+    color: teal;
+}
+
+span.my-badge {
+  background-color: teal;
+  color: white;
+  padding: 4px 5px;
+  border-radius: 50%;
+  margin-left: 4px;
+  min-width: 12px;
+  display: inline-block;
+  line-height: 1;
+}
+
+span.my-badge.warn {
+  background-color: orangered;
+}
+
+.vertical-on-mobile {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@media ( max-width: 768px) {
+  .vertical-on-mobile {
+    flex-direction: column;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

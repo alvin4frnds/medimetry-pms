@@ -1,0 +1,318 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.mat-dialog-container {
+  padding: 10px !important;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.dashboardIconBackGround {
+  height: 35px;
+  width: 35px;
+  background: transparent;
+  border-radius: 50px
+}
+
+.dashboardIconBackGroundClicked {
+  height: 35px;
+  width: 35px;
+  background: #55d8b7;
+  border-radius: 50px
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+::ng-deep button.mat-icon-button {
+  margin-right: 0 !important;
+}
+
+button.mat-icon-button {
+  margin-right: 0 !important;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none !important;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper, ::ng-deep mat-form-field.fullWidth div.mat-form-field-wrapper, ::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-form-field-infix {
+  border-top: 0 !important;
+}
+
+.inputBoxBorder {
+  border: 1px solid rgba(34, 36, 38, .15) !important;
+  color: rgba(0, 0, 0, .87);
+  border-radius: .28571429rem;
+  font-size: 14px;
+  text-align: start;
+  padding-left: 10px;
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+@media (min-width: 1281px) {
+  .toolbar-title {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .toolbar-subdetails {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+  }
+  .navListItemStyle {
+    color: black;
+    font-family: Poppins;
+    font-size: 13px;
+    font-weight: 500
+  }
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .toolbar-title {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .toolbar-subdetails {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+  }
+  .navListItemStyle {
+    color: black;
+    font-family: Poppins;
+    font-size: 13px;
+    font-weight: 500
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .toolbar-title {
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .toolbar-subdetails {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+  }
+  .navListItemStyle {
+    color: black;
+    font-family: Poppins;
+    font-size: 13px;
+    font-weight: 500
+  }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .toolbar-title {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .toolbar-subdetails {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+  }
+  .navListItemStyle {
+    color: black;
+    font-family: Poppins;
+    font-size: 13px;
+    font-weight: 500
+  }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .toolbar-title {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .toolbar-subdetails {
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+  }
+  .navListItemStyle {
+    color: black;
+    font-family: Poppins;
+    font-size: 13px;
+    font-weight: 500
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  font-size: 12px;
+  line-height: 13px;
+  border-radius: 50%;
+  width: 13px;
+  height: 13px;
+  background-color: #ff0000;
+  border: 4px solid #ff0000;
+  color: #ffffff;
+  text-align: center;
+}
+
+#is-testing-env-ribbon {
+  background: red;
+  height: 25px;
+  padding-left: 10px;
+  opacity: 1;
+  padding-right: 10px;
+  position: absolute;
+  width: 100%;
+  margin-top: 0;
+}
+
+#is-testing-env-ribbon p {
+  color: white;
+  font-weight: bold;
+}
+
+button#channel-center-filter {
+  margin-right: 16px !important;
+}
+
+button#channel-center-filter.selected {
+  background-color: #efefef;
+  color: teal;
+  font-weight: bold;
+  border: solid teal 2px;
+}
+
+mat-card.searchBarStyle {
+  padding: 4px 16px;
+}
+
+#toggle-listening-button {
+  position: absolute;
+  right: 0;
+  color: white;
+  top: 30px;
+}
+
+mat-sidenav#left-sidenav-drawer .mat-list-item {
+  padding-left: 16px !important;
+  width: calc(100% - 16px);
+}
+
+span.tags code {
+  margin-right: 10px;
+  background-color: #eee;
+  border-radius: 2px;
+}
+
+@media screen and (max-width: 950px) {
+  .width-almost-full {
+    width: calc(100vw - 56px) !important;
+    left: -28px !important;
+    position: absolute !important;
+  }
+}
+
+::ng-deep .mat-badge-content {
+  text-overflow: clip !important;
+}
+
+#last-30-day-without-followup-consults .mat-form-field-infix {
+  border-top: 0;
+}
+
+/* calender */
+
+#calender .mat-calendar-body-today.mat-calendar-body-selected {
+  border-color: rgb(0, 150, 136) !important;
+  background: #009688 !important;
+  color: white !important;
+}
+
+.calender-border {
+  border: 1px solid #e0e0e0;
+  margin-left: 6px;
+  /* box-shadow: inset 0px 0px 2px 0px #cacaca; */
+}
+
+#calender .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background-color: rgba(0, 150, 136, 0.23);
+}
+
+#calender .mat-calendar-body-cell.selected {
+  background-color: #00968899!important;
+  border-radius: 50%;
+  color: white !important;
+  font-weight: bold;
+}
+
+#calender.drop-calendar {
+  width: 30rem
+}
+
+/* will uncomment this maybe, when we have proper logic for highlightings. 
+
+#calender mat-month-view .mat-calendar-body tr td:nth-child(3) .mat-calendar-body-cell-content {
+  border: 1px solid #009688;
+  border-radius: 50%;
+  font-weight: 500;
+} */
+
+#calender .mat-card:not([class*='mat-elevation-z']) {
+  box-shadow: none !important;
+}
+
+.special-date div.mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background: lightcyan;
+  border: solid 1px teal;
+}
+
+

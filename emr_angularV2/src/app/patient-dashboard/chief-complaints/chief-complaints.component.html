@@ -1,0 +1,107 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Chief Complaints</strong></p>
+        <mat-icon (click)="deleteSection()" class="iconStyle_big a-icon"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  *ngIf="!_util.previousSoapSettings.previousSoapActivated && !fromDialog">close
+        </mat-icon>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+        <div fxLayout="row" *ngFor="let c of _util.current_soap_model.chief_complaints; let position = index"
+             class="fullWidth"
+             fxFlexAlign="center center">
+            <div fxFlex="row" fxLayoutAlign="center center" class="fullWidth a-chief-complaint-row"
+                 *ngIf="c.type==='text'">
+                <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong>-</strong></p>
+
+
+
+                <mat-form-field fxFlex="90" fxFlexAlign="start center" class="fullWidth">
+                    <input class="complaint-text fullWidth a-chief-complaint-input-field"
+                    id="chief_{{position}}" matInput
+
+
+                           (blur)="addNewRow(false,position,false,$event)"
+                           (keyup)="addNextRow()"
+                           (keyup.enter)="sendFocusToNextElement(position)"
+                          [(ngModel)]="c.complaint"
+                           (input)="showTermsSuggestions(c.complaint,position)"
+                           [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                           [matAutocomplete]="c_complaints"
+                           style="height: 14px;"
+                    />
+
+                    <mat-placeholder class="placeholder">Add Complaint</mat-placeholder>
+                    <mat-autocomplete #c_complaints="matAutocomplete" class="keyboard_open">
+                        <div *ngIf="c.showSuggestion">
+                            <mat-option *ngFor="let suggestion of complaintSuggestions | search : c.complaint"
+                                        [value]="suggestion.term_body"
+                                        (onSelectionChange)="selectSuggestion(suggestion,position,$event)">
+                                <p class="complaint-text custom-font-style">{{suggestion.term_body}}</p>
+                            </mat-option>
+                        </div>
+                    </mat-autocomplete>
+
+
+                </mat-form-field>
+                <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                             *ngIf="c.showProgressBar"></mat-spinner>
+                <div fxLayout="row"
+                     *ngIf="c.processed && !_util.previousSoapSettings.previousSoapActivated"
+                     fxLayoutAlign="center center">
+                    <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+                </div>
+
+                <div fxLayout="row"
+                     *ngIf="!(c.processed && !_util.previousSoapSettings.previousSoapActivated)"
+                     fxLayoutAlign="center center">
+                    <mat-icon class="icon_style_small" style="color: white;"></mat-icon>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div fxLayout="row wrap" fxLayoutGap="10px" style="margin-top: 10px;margin-left: 5%">
+            <div *ngFor="let image of _util.current_soap_model.chief_complaints;let position = index">
+
+              <div fxLayout="column" *ngIf="image.type==='image'" > <!-- {{image.complaint}} -->
+                <a href="{{ _util.getAttachmentHref(image.complaint) }}" target="_blank">
+                      <img *ngIf="image.type==='image'"
+                           src="{{ _util.getAttachmentThumb(image.complaint) }}" height="50" width="50"
+                           style="border-radius: 40px"></a>
+
+                <p class="complaint-text showPointer" (click)="deleteRow(position)">
+                            <strong style="color: blue">Delete</strong></p>
+              </div>
+
+            </div>
+            <mat-spinner *ngIf="progressImageUpload" diameter="15" strokeWidth="3"
+                         style="margin-top: 15px"></mat-spinner>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="end center">
+            <mat-icon class="dashboard-cancel-icon-syle a-big-icon iconStyle_big" fxShow="false"
+                      (click)="openTouchPad()">accessibility
+            </mat-icon>
+
+            <input type="file" #uploadImage style="display: none;" (change)="onFileSelect($event,0)">
+
+            <mat-icon *ngIf="!_util.previousSoapSettings.previousSoapActivated && !fromDialog"  class="dashboard-cancel-icon-syle a-big-icon iconStyle_big" (click)="uploadImage.click()">attachment
+
+            </mat-icon>
+        </div>
+
+    </div>
+
+
+    <div fxLayout="row" class="inputBoxBorder" style="border-color: transparent !important;">
+
+
+
+    </div>
+
+
+</div>

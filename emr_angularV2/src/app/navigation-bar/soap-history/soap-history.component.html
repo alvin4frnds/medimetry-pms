@@ -1,0 +1,44 @@
+
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="data">
+    <mat-spinner diameter="30" strokeWidth="3"  style="margin-top: 15px"></mat-spinner>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="!data && _util.previousSoapObject.length < 2">
+
+  <p>No Previous Visits found </p>
+
+</div>
+<div style="height: 100%;overflow: scroll"
+                 infiniteScroll
+                 [infiniteScrollDistance]="0.5"
+                 [infiniteScrollThrottle]="500"
+                 (scrolled)="onScrollMore()"
+                 [scrollWindow]="false"
+            >
+
+    <mat-nav-list>
+        <mat-list-item *ngFor="let soap of _util.previousSoapObject" (click)="openSpecificSoap(soap)"
+                       class="previous-soap">
+            <h3 matLine> {{ _util.showDateLocally(soap.created_at) }}
+                <span *ngIf="_util.current_soap_model.id === soap.id"> ( selected ) </span>
+            </h3>
+            <p matLine>
+                <span *ngFor="let c of soap.chief_complaints">
+                    <span *ngIf="c.type==='text'">
+                        {{ c.complaint }}
+                    </span>
+                </span>
+            </p>
+
+            <button mat-icon-button aria-label="Remove this soap from listing"
+                    matTooltip="Remove this soap from listing"
+                    color="warn"
+                    (click)="removeSoapFromListing(soap.id)"
+                    appClickStopPropagation
+            >
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-list-item>
+    </mat-nav-list>
+
+</div>

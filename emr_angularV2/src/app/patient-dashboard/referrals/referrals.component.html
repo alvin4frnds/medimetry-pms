@@ -1,0 +1,54 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <p class="dashboard-title" style="margin-bottom: 5px;"><strong>Referrals</strong></p>
+        <mat-icon class="iconStyle_big a-icon" (click)="deleteSection()"
+                  style="margin-bottom: -15px; margin-right: 6px;"
+                  *ngIf="!_util.previousSoapSettings.previousSoapActivated">
+            close
+        </mat-icon>
+    </div>
+
+
+    <div fxLayout="column" class="inputBoxBorder" style="padding-right: 5px;">
+
+        <div fxLayout="row" *ngFor="let referrals of _util.current_soap_model.referrals; let position = index"
+             class="fullWidth"
+             fxFlexAlign="center center">
+
+            <p class="dashboard-title primary_color" fxFlex="5" style="margin: 10px 0;"><strong> - </strong></p>
+            <mat-form-field fxFlex="90" fxLayoutAlign="start center">
+                <input type="text" class="complaint-text a-referral-input-field"
+                       aria-label="Number" matInput
+                       id="ref_{{position}}"
+                       [(ngModel)]="referrals.remarks"
+                       (blur)="addNewRow(false,position,false)"
+                       (keyup.enter)="sendFocusToNextElement(position)"
+                       (keyup)="addNextRow()"
+                       style="height: 14px;"
+                       [disabled]="_util.previousSoapSettings.previousSoapActivated"
+                />
+                <mat-placeholder class="placeholder">Add Referrals</mat-placeholder>
+            </mat-form-field>
+            <mat-spinner diameter="15" strokeWidth="3" style="margin-top: 15px"
+                         *ngIf="referrals.showProgressBar"></mat-spinner>
+            <div fxLayout="row"
+                 *ngIf="referrals.processed && !_util.previousSoapSettings.previousSoapActivated; else showRefillLayout"
+                 fxLayoutAlign="center center">
+                <mat-icon class="icon_style_small a-icon" (click)="deleteRow(position)">close</mat-icon>
+            </div>
+            <div fxLayout="row"
+                 *ngIf="!(referrals.processed && !_util.previousSoapSettings.previousSoapActivated)"
+                 fxLayoutAlign="center center"
+            >
+                <mat-icon class="icon_style_small" style="color: white;">close</mat-icon>
+            </div>
+
+
+            <!--<div fxLayout="row" fxLayoutAlign="center center" *ngIf="_util.previousSoapSettings.previousSoapActivated">-->
+            <!--<mat-checkbox></mat-checkbox>-->
+            <!--</div>-->
+        </div>
+    </div>
+
+
+</div>

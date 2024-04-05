@@ -1,0 +1,86 @@
+.title {
+    font-size: 20px;
+    width: 100%;
+    font-weight: bolder;
+}
+
+.section {
+    margin-left: 20px;
+}
+
+.sub-title {
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 32px;
+}
+
+.heading {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+ul.no-top-margin {
+    margin-top: 0;
+}
+
+.medium-margin {
+    margin: 10px;
+}
+.historyHeader {
+  margin-left: 15px;
+  font-weight: 500;
+  margin-top: 13px;
+}
+
+.historyItem {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+div#personalHistory mat-progress-bar, div#personalHistory span.heading, #medications-and-feedback .medicine, #medications-and-feedback .feedback {
+    margin-left: 40px;
+    width: 80%;
+}
+
+#medications-and-feedback .medicine {
+    margin-top: 8px;
+}
+
+#medications-and-feedback .medicine .complaint-text {
+    font-size: 12px;
+}
+
+#medications-and-feedback .feedback p.complaint-text {
+    margin-bottom: 0;
+}
+
+#medications-and-feedback .heading {
+    margin-top: 10px;
+}
+
+.mat-cell, .mat-header-cell {
+  font-size: 14px;
+  padding: 10px;
+  border-right: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-left: 0.5px solid rgba(0, 0, 0, 0.12);
+}
+
+.mat-header-cell {
+  border-top: 0.5px solid rgba(0, 0, 0, 0.12);
+
+}
+
+::ng-deep tr.mat-footer-row, tr.mat-row {
+  height: 20px !important;
+}
+
+::ng-deep tr.mat-header-row {
+  height: 44px !important;
+}
+
+::ng-deep .mat-elevation-z8 {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
